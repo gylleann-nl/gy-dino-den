@@ -637,7 +637,11 @@ let digReady=false;
 /* ---------- Colouring ---------- */
 const VIEWS=["meet","dig","quiz","colour"];
 const PALETTE=["#FF5A5F","#FF9F1C","#FFD23F","#3BCE7A","#1F8A4C","#7FD8F5","#3FA9F5","#6C63FF","#B05CE6","#FF6FB5","#8B5A2B","#D9B38C","#9AA0A6","#2B2350","#FFFFFF"];
-let paintColor=PALETTE[0],colourDino="trex",colourReady=false;const fills={};
+let paintColor=PALETTE[0],colourDino="trex",colourReady=false;
+/* Pictures are kept in this device's browser, so each child's colouring is still there next time. */
+let fills={};
+try{const f=JSON.parse(localStorage.getItem("dinoPictures")||"{}");if(f&&typeof f==="object")fills=f;const c=localStorage.getItem("dinoPictureDino");if(c&&SHAPES[c])colourDino=c}catch(e){}
+function savePictures(){try{localStorage.setItem("dinoPictures",JSON.stringify(fills));localStorage.setItem("dinoPictureDino",colourDino)}catch(e){}}
 function sceneSVG(id){
   const d=byId[id],sc=Math.min(1.05,96/d.h),w=200*sc,x=(240-w)/2,y=132-d.h*sc;
   return `<svg viewBox="0 0 240 160" id="paintSvg" role="img" aria-label="${nm(d)}">
@@ -660,13 +664,13 @@ function renderPaper(){
   svg.querySelectorAll(".paint").forEach((el,i)=>{el.dataset.i=i;el.setAttribute("fill",saved[i]||"#FFFFFF")});
   svg.addEventListener("click",e=>{
     const el=e.target.closest(".paint");if(!el)return;
-    el.setAttribute("fill",paintColor);(fills[colourDino]=fills[colourDino]||[])[+el.dataset.i]=paintColor;bloop();
+    el.setAttribute("fill",paintColor);(fills[colourDino]=fills[colourDino]||[])[+el.dataset.i]=paintColor;savePictures();bloop();
   });
 }
 function renderStrip(){
   const el=document.getElementById("colStrip");
   el.innerHTML=DINOS.map(d=>`<button data-id="${d.id}" aria-pressed="${d.id===colourDino}" aria-label="${nm(d)}" style="color:var(--ink)">${dinoSVG(d.id,"")}</button>`).join("");
-  el.querySelectorAll("button").forEach(b=>b.onclick=()=>{colourDino=b.dataset.id;el.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));renderPaper()});
+  el.querySelectorAll("button").forEach(b=>b.onclick=()=>{colourDino=b.dataset.id;el.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));savePictures();renderPaper()});
 }
 function renderSwatches(){
   const t=T(),el=document.getElementById("swatches");
@@ -678,9 +682,9 @@ function bloop(){whenReady(a=>{const t=a.currentTime+.01,o=a.createOscillator(),
 document.getElementById("magicBtn").onclick=()=>{
   const fun=PALETTE.slice(0,13),f=[];
   document.querySelectorAll("#paintSvg .paint").forEach((el,i)=>{const c=fun[Math.floor(Math.random()*fun.length)];f[i]=c;el.setAttribute("fill",c)});
-  fills[colourDino]=f;chime(true);
+  fills[colourDino]=f;savePictures();chime(true);
 };
-document.getElementById("clearBtn").onclick=()=>{delete fills[colourDino];renderPaper()};
+document.getElementById("clearBtn").onclick=()=>{delete fills[colourDino];savePictures();renderPaper()};
 
 function show(v){
   document.querySelectorAll("nav button").forEach(b=>b.setAttribute("aria-selected",b.dataset.view===v));
