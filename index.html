@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>html{color-scheme:light}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Dino Den</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+<style>
+/* Rainbow (single light look by choice). Field-guide app. Big chunky tab bar, a "museum stage" for the chosen dinosaur, then a grid of cards. */
+:root{
+  --bg:#F5F6FF; --surface:#FFFFFF; --ink:#2B2350; --muted:#6B6590;
+  --fern:#3D74E8; --lava:#E8405F; --line:#E2E0F4; --sand:#FFE7A3; --btnInk:#FFFFFF;
+  --plant:#23935A; --meat:#D8344F; --fish:#2C77C9; color-scheme:light;
+  --r1:#FF5A5F; --r2:#FF9F1C; --r3:#FFD23F; --r4:#3BCE7A; --r5:#3FA9F5; --r6:#6C63FF; --r7:#B05CE6;
+  --rainbow:linear-gradient(90deg,var(--r1),var(--r2),var(--r3),var(--r4),var(--r5),var(--r6),var(--r7));
+  --display:"Fredoka","Trebuchet MS","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+  --body:"Nunito","Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px 40px}
+.wrap{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.1}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--lava);outline-offset:3px}
+
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand svg{width:64px;height:auto;color:var(--fern)}
+.brand h1{font-size:2rem;font-weight:700;letter-spacing:.01em}
+.brand h1{background:var(--rainbow);-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand h1 span{color:inherit}
+.wrap > header{position:relative;padding-bottom:16px}
+.wrap > header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:8px;border-radius:999px;background:var(--rainbow)}
+nav{display:flex;gap:6px;background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:5px}
+nav button{border:0;background:none;border-radius:999px;padding:10px 20px;font-family:var(--display);font-weight:600;font-size:1.1rem;color:var(--muted)}
+nav button[aria-selected="true"]{color:#fff}
+:root.pink{--pit:#C98DA4; --bg:#FDE4EE; --surface:#FFF5F9; --ink:#5A2E44; --muted:#9A6A82;
+  --fern:#E27BAA; --lava:#D9578A; --line:#F6C6DA; --sand:#FAD3DF;
+  --plant:#3C9468; --meat:#D2486A; --fish:#4C88C4;
+  --r1:#F59AB9; --r2:#F7AFC6; --r3:#FBC8D8; --r4:#F2A3C7; --r5:#E58BB5; --r6:#D9578A; --r7:#F7AFC6}
+:root.pink nav button[aria-selected="true"]{background:var(--lava)!important}
+:root.green{--pit:#0B1C13; --bg:#0F2419; --surface:#173323; --ink:#E6F4E8; --muted:#A1C2AA;
+  --fern:#2F9158; --lava:#D9622B; --line:#2A4B37; --sand:#3D5A3A;
+  --plant:#7FDB9E; --meat:#FF8A7A; --fish:#7EC3F2; color-scheme:dark;
+  --r1:#1E5B3A; --r2:#2F7D4A; --r3:#4CA66A; --r4:#7FCB8A; --r5:#4CA66A; --r6:#2F7D4A; --r7:#1E5B3A}
+:root.green nav button[aria-selected="true"]{background:var(--fern)!important}
+:root.green .brand h1{background:linear-gradient(90deg,#7FDB9E,#C6EFA0);-webkit-background-clip:text;background-clip:text}
+:root.green .time .bar span{color:#14261B}
+.themes button[data-theme-pick="green"] i{background:#1E5B3A;box-shadow:inset 0 0 0 2px #7FDB9E}
+.themes{display:flex;gap:4px;background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:4px}
+.themes button{border:0;background:none;border-radius:999px;padding:7px 12px;font-weight:800;font-size:.95rem;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
+.themes button i{width:14px;height:14px;border-radius:50%;display:inline-block}
+.themes button[data-theme-pick="pink"] i{background:#F59AB9}
+.themes button[data-theme-pick="rainbow"] i{background:conic-gradient(#FF5A5F,#FF9F1C,#FFD23F,#3BCE7A,#3FA9F5,#6C63FF,#B05CE6,#FF5A5F)}
+.themes button[aria-pressed="true"]{background:var(--fern);color:#fff}
+nav button:nth-child(1)[aria-selected="true"]{background:var(--r1)}
+nav button:nth-child(2)[aria-selected="true"]{background:#E68400}
+nav button:nth-child(3)[aria-selected="true"]{background:var(--r6)}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.langs{display:flex;gap:4px;background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:4px}
+.langs button{border:0;background:none;border-radius:999px;padding:7px 12px;font-weight:800;font-size:.95rem;color:var(--muted)}
+.langs button[aria-pressed="true"]{background:var(--r5);color:#fff}
+
+/* Stage */
+.detail{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px;background:var(--surface);border:2px solid var(--line);border-radius:28px;padding:20px}
+@media (max-width:760px){.detail{grid-template-columns:1fr;padding:14px}}
+.stage{position:relative;border-radius:20px;background:color-mix(in srgb,var(--dino) 16%,var(--surface));display:flex;align-items:flex-end;padding:24px 16px 0;min-height:250px;overflow:hidden}
+.stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:22px;background:var(--rainbow);opacity:.75}
+.stage svg{position:relative;z-index:1;width:100%;height:auto;max-height:280px;margin-bottom:12px;color:var(--dino)}
+.stage.stomp svg{animation:stomp .5s ease-in-out 2}
+@keyframes stomp{0%,100%{transform:translate(0,0)}25%{transform:translate(-4px,2px) rotate(-1deg)}75%{transform:translate(4px,-1px) rotate(1deg)}}
+.info{display:flex;flex-direction:column;gap:12px;min-width:0}
+.info h2{font-size:clamp(1.8rem,4vw,2.5rem);font-weight:700;color:var(--ink)}
+.say{font-size:1rem;color:var(--muted)}
+.say b{font-family:var(--display);font-weight:600;color:var(--ink);letter-spacing:.04em}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.btn{border:0;border-radius:16px;padding:12px 18px;font-family:var(--display);font-weight:600;font-size:1.1rem;display:inline-flex;align-items:center;gap:8px;background:var(--lava);color:var(--btnInk);box-shadow:0 4px 0 color-mix(in srgb,var(--lava) 65%,#000)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 color-mix(in srgb,var(--lava) 60%,#000)}
+.btn.alt{background:var(--fern);box-shadow:0 4px 0 color-mix(in srgb,var(--fern) 65%,#000);color:#fff}
+.btn svg{width:22px;height:22px}
+.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0}
+.facts div{background:var(--bg);border-radius:14px;padding:8px 12px}
+.facts dt{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:800}
+.facts dd{margin:0;font-weight:700;font-size:1.05rem}
+.fun{font-size:1.15rem;font-weight:700;margin:0;padding:12px 14px;border-radius:14px;border:2px dashed color-mix(in srgb,var(--dino) 60%,var(--line))}
+.chip{display:inline-block;padding:3px 10px;border-radius:999px;font-size:.8rem;font-weight:800;letter-spacing:.03em;border:2px solid currentColor}
+.chip.plants{color:var(--plant)} .chip.meat{color:var(--meat)} .chip.fish{color:var(--fish)}
+
+.wide{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px}
+@media (max-width:760px){.wide{grid-template-columns:1fr}}
+.panel h3{font-size:1.15rem;margin-bottom:6px}
+.panel p{margin:4px 0 0;color:var(--muted);font-size:.95rem}
+.size svg{width:100%;height:auto;display:block}
+.time .bar{display:flex;height:34px;border-radius:10px;overflow:hidden;position:relative;margin-top:30px}
+.time .bar span{display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;color:#3A2430;letter-spacing:.03em}
+.time .pin{position:absolute;top:-28px;transform:translateX(-50%);font-family:var(--display);font-weight:600;font-size:.85rem;white-space:nowrap;color:var(--ink)}
+.time .pin::after{content:"";display:block;width:3px;height:30px;background:var(--ink);margin:2px auto 0}
+.time .scale{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:4px}
+
+.pick h2{font-size:1.4rem;margin-bottom:10px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:820px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.card{border:3px solid color-mix(in srgb,var(--dino) 35%,var(--line));background:var(--surface);border-radius:20px;padding:10px 10px 12px;display:flex;flex-direction:column;gap:6px;align-items:flex-start;text-align:left}
+.card .pic{width:100%;aspect-ratio:2/1;border-radius:12px;background:color-mix(in srgb,var(--dino) 14%,var(--surface));display:flex;align-items:flex-end;justify-content:center;padding:6px 8px 4px}
+.card .pic svg{width:100%;max-height:100%;color:var(--dino)}
+.card b{font-family:var(--display);font-weight:600;font-size:1.05rem;line-height:1.15}
+.card[aria-pressed="true"]{border-color:var(--dino);box-shadow:0 0 0 3px color-mix(in srgb,var(--dino) 40%,transparent)}
+@media (prefers-reduced-motion:no-preference){.card{transition:transform .15s}.card:hover{transform:translateY(-3px)}}
+@media (prefers-reduced-motion:reduce){.stage.stomp svg{animation:none}}
+
+/* Dig */
+.box{background:var(--surface);border:2px solid var(--line);border-radius:28px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.box > h2{font-size:1.7rem}
+.box > p{margin:0;color:var(--muted)}
+.pit{position:relative;width:100%;aspect-ratio:16/9;max-height:480px;border-radius:20px;overflow:hidden;background:var(--pit,#7C74C4);touch-action:none}
+.pit .fossil{position:absolute;inset:8% 6%;display:flex;align-items:center;justify-content:center}
+.pit .fossil svg{width:100%;height:100%;color:#FFFFFF;filter:drop-shadow(0 2px 0 rgba(0,0,0,.35))}
+.pit canvas{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair}
+.meter{height:16px;background:var(--bg);border-radius:999px;overflow:hidden;border:2px solid var(--line)}
+.meter i{display:block;height:100%;width:0;background:var(--rainbow);background-size:100vw 100%;transition:width .2s}
+.found{display:flex;flex-wrap:wrap;align-items:center;gap:12px;font-family:var(--display);font-size:1.4rem;font-weight:600}
+
+/* Quiz */
+.q-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.stars{display:flex;gap:4px}
+.stars svg{width:28px;height:28px}
+.q-text{font-family:var(--display);font-size:clamp(1.4rem,3.5vw,2rem);font-weight:600;margin:0}
+.q-pic{border-radius:20px;background:var(--bg);padding:16px;display:flex;justify-content:center}
+.q-pic svg{width:min(100%,460px);height:auto;color:var(--ink)}
+.opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:620px){.opts{grid-template-columns:1fr}}
+.opt{border:3px solid var(--line);background:var(--surface);border-radius:18px;padding:14px;font-family:var(--display);font-weight:600;font-size:1.2rem;display:flex;flex-direction:column;align-items:center;gap:6px}
+.opt svg{width:100%;max-width:160px;height:auto}
+.opt:nth-child(1){border-color:color-mix(in srgb,var(--r1) 45%,var(--line))}.opt:nth-child(2){border-color:color-mix(in srgb,var(--r4) 45%,var(--line))}.opt:nth-child(3){border-color:color-mix(in srgb,var(--r5) 45%,var(--line))}
+.opt.right{border-color:var(--plant);background:color-mix(in srgb,var(--plant) 15%,var(--surface))}
+.opt.wrong{border-color:var(--meat);background:color-mix(in srgb,var(--meat) 12%,var(--surface))}
+.feedback{font-family:var(--display);font-size:1.3rem;font-weight:600;min-height:1.6em;margin:0}
+.feedback.good{color:var(--plant)} .feedback.bad{color:var(--meat)}
+.end{text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px 0}
+.end .stars svg{width:48px;height:48px}
+.end h2{font-size:2.2rem}
+footer{color:var(--muted);font-size:.85rem;text-align:center}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="brand"><span id="logo"></span><h1>Dino <span>Den</span></h1></div>
+    <div class="controls">
+      <nav role="tablist" aria-label="Sections">
+        <button role="tab" id="tab-meet" aria-selected="true" data-view="meet"></button>
+        <button role="tab" id="tab-dig" aria-selected="false" data-view="dig"></button>
+        <button role="tab" id="tab-quiz" aria-selected="false" data-view="quiz"></button>
+      </nav>
+      <div class="themes" role="group" aria-label="Colors">
+        <button data-theme-pick="pink" aria-label="Pink"><i></i><span class="tp"></span></button>
+        <button data-theme-pick="rainbow" aria-label="Rainbow"><i></i><span class="tr"></span></button>
+        <button data-theme-pick="green" aria-label="Dark green"><i></i><span class="tg"></span></button>
+      </div>
+      <div class="langs" role="group" aria-label="Language / 语言 / Språk">
+        <button data-lang="en" lang="en">English</button>
+        <button data-lang="zh" lang="zh">中文</button>
+        <button data-lang="sv" lang="sv">Svenska</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="view-meet" class="wrap">
+      <article class="detail" id="detail"></article>
+      <div class="pick">
+        <h2 id="pickTitle"></h2>
+        <div class="grid" id="grid"></div>
+      </div>
+    </section>
+
+    <section id="view-dig" class="box" hidden>
+      <h2 id="digTitle"></h2>
+      <p id="digHelp"></p>
+      <div class="pit" id="pit"><div class="fossil" id="fossil"></div><canvas id="sand"></canvas></div>
+      <div class="meter" id="meterBox"><i id="meter"></i></div>
+      <div class="found" id="found" hidden></div>
+    </section>
+
+    <section id="view-quiz" class="box" hidden></section>
+  </main>
+  <footer id="foot"></footer>
+</div>
+
+<script>
+/* ---------- Data ---------- */
+const DINOS=[
+ {id:"trex",name:"Tyrannosaurus rex",zh:["霸王龙","bà wáng lóng"],say:"tie-RAN-oh-SORE-us rex",diet:"meat",len:12,wt:[8],unit:"t",mya:[68,66],place:["na"],color:"#FF5A5F",h:75,snd:{f:62,n:.9,o:.5,d:1.7},
+  means:{en:"Tyrant lizard king",zh:"暴君蜥蜴之王",sv:"Tyrannödlekung"},
+  fact:{en:"Its biggest teeth were about as long as a banana.",zh:"它最大的牙齿差不多有一根香蕉那么长。",sv:"Dess största tänder var ungefär lika långa som en banan."}},
+ {id:"trike",name:"Triceratops",zh:["三角龙","sān jiǎo lóng"],say:"try-SAIR-uh-tops",diet:"plants",len:9,wt:[6,12],unit:"t",mya:[68,66],place:["na"],color:"#FF9F1C",h:66,snd:{f:90,n:.6,o:.6,d:1.1},
+  means:{en:"Three-horned face",zh:"有三只角的脸",sv:"Trehornat ansikte"},
+  fact:{en:"It lived at the same time as T. rex, and its two big horns could grow over 1 meter long.",zh:"它和霸王龙生活在同一个时代，它的两只大角能长到1米多长。",sv:"Den levde samtidigt som T. rex, och dess två stora horn kunde bli över 1 meter långa."}},
+ {id:"stego",name:"Stegosaurus",zh:["剑龙","jiàn lóng"],say:"STEG-oh-SORE-us",diet:"plants",len:9,wt:[5],unit:"t",mya:[155,150],place:["na","pt"],color:"#F2C230",h:88,snd:{f:110,n:.5,o:.5,d:.9},
+  means:{en:"Roof lizard",zh:"屋顶蜥蜴",sv:"Taködla"},
+  fact:{en:"Its body was bigger than a car, but its brain was only about the size of a lime.",zh:"它的身体比一辆汽车还大，可是它的大脑只有一个青柠那么大。",sv:"Kroppen var större än en bil, men hjärnan var bara ungefär lika stor som en lime."}},
+ {id:"brachio",name:"Brachiosaurus",zh:["腕龙","wàn lóng"],say:"BRAK-ee-oh-SORE-us",diet:"plants",len:22,wt:[30,50],unit:"t",mya:[154,150],place:["na"],color:"#3BCE7A",h:110,snd:{f:48,n:.4,o:.8,d:2.2},
+  means:{en:"Arm lizard",zh:"手臂蜥蜴",sv:"Armödla"},
+  fact:{en:"Its front legs were longer than its back legs, like a giraffe. It could peek into a fourth-floor window.",zh:"它的前腿比后腿长，就像长颈鹿一样。它能从四楼的窗户往里看。",sv:"Frambenen var längre än bakbenen, precis som hos en giraff. Den kunde kika in genom ett fönster på fjärde våningen."}},
+ {id:"raptor",name:"Velociraptor",zh:["迅猛龙","xùn měng lóng"],say:"veh-LOSS-ih-rap-tor",diet:"meat",len:2,wt:[15],unit:"kg",mya:[75,71],place:["mn"],color:"#3FA9F5",h:70,snd:{f:520,n:.5,o:.7,d:.55},
+  means:{en:"Swift thief",zh:"敏捷的小偷",sv:"Snabb tjuv"},
+  fact:{en:"It was about the size of a turkey and was covered in feathers.",zh:"它差不多有一只火鸡那么大，全身长着羽毛。",sv:"Den var ungefär lika stor som en kalkon och var täckt av fjädrar."}},
+ {id:"ankylo",name:"Ankylosaurus",zh:["甲龙","jiǎ lóng"],say:"an-KY-loh-SORE-us",diet:"plants",len:7,wt:[5,8],unit:"t",mya:[68,66],place:["na"],color:"#6C63FF",h:50,snd:{f:80,n:.8,o:.4,d:1},
+  means:{en:"Fused lizard",zh:"融合的蜥蜴",sv:"Sammanvuxen ödla"},
+  fact:{en:"It was covered in bony armor and swung a heavy club on the end of its tail.",zh:"它全身覆盖着骨质铠甲，尾巴末端还有一个沉重的骨锤，可以甩来甩去。",sv:"Den var täckt av benpansar och svingade en tung klubba längst ut på svansen."}},
+ {id:"para",name:"Parasaurolophus",zh:["副栉龙","fù zhì lóng"],say:"PAIR-uh-sore-OL-oh-fus",diet:"plants",len:9.5,wt:[2.5],unit:"t",mya:[76,74],place:["na"],color:"#B05CE6",h:90,snd:{f:150,n:.05,o:1,d:1.3,honk:1},
+  means:{en:"Near crested lizard",zh:"接近有冠的蜥蜴",sv:"Nästan krönödla"},
+  fact:{en:"Air flowed through its long hollow crest to make loud honking sounds.",zh:"空气流过它长长的空心头冠，能发出响亮的鸣叫声。",sv:"Luft strömmade genom dess långa ihåliga kam och gav höga tutande läten."}},
+ {id:"spino",name:"Spinosaurus",zh:["棘龙","jí lóng"],say:"SPY-no-SORE-us",diet:"fish",len:14,wt:[7],unit:"t",mya:[99,93],place:["naf"],color:"#FF6FB5",h:80,snd:{f:75,n:.8,o:.6,d:1.4},
+  means:{en:"Spine lizard",zh:"有棘刺的蜥蜴",sv:"Taggödla"},
+  fact:{en:"It spent lots of time in rivers and caught fish, a bit like a giant crocodile.",zh:"它常常待在河里抓鱼，有点像一条巨大的鳄鱼。",sv:"Den tillbringade mycket tid i floder och fångade fisk, lite som en jättelik krokodil."}},
+];
+const PINK={trex:"#E97FA3",trike:"#F0A08A",stego:"#EDB46E",brachio:"#B49BE6",raptor:"#D98FD0",ankylo:"#8FC9A6",para:"#86BCE6",spino:"#F294BE"};
+let theme="rainbow";try{const t=localStorage.getItem("dinoTheme");if(["pink","rainbow","green"].includes(t))theme=t}catch(e){}
+const GREEN={trex:"#E8735A",trike:"#8FD16A",stego:"#E8B64A",brachio:"#5FC7A8",raptor:"#B48BE0",ankylo:"#B9C76A",para:"#6CB4E0",spino:"#E07FA8"};
+const col=d=>theme==="pink"?PINK[d.id]:theme==="green"?GREEN[d.id]:d.color;
+const byId=Object.fromEntries(DINOS.map(d=>[d.id,d]));
+const PLACES={na:{en:"North America",zh:"北美洲",sv:"Nordamerika"},pt:{en:"Portugal",zh:"葡萄牙",sv:"Portugal"},mn:{en:"Mongolia",zh:"蒙古",sv:"Mongoliet"},naf:{en:"North Africa",zh:"北非",sv:"Nordafrika"}};
+
+/* ---------- Words ---------- */
+const S={
+ en:{green:"Dark green",pink:"Pink",rainbow:"Rainbow",voice:"en-US",tabs:["Meet","Dig","Quiz"],pick:"Pick a dinosaur",diet:{plants:"Plant eater",meat:"Meat eater",fish:"Fish eater"},
+  sayLabel:"Say it:",roar:"Roar",honk:"Honk",tell:"Tell me about it",means:"Name means",length:"Length",weight:"Weight",found:"Found in",
+  m:n=>`${n} meters`,and:" and ",wt:(w,u)=>w.length>1?`${w[0]} to ${w[1]} tonnes`:`About ${w[0]} ${u==="t"?"tonnes":"kg"}`,
+  sizeH:"How big next to you?",kids:n=>`As long as about ${n} kids lying head to toe.`,you:"You",meters:"meters",
+  sizeAria:(nm,l)=>`${nm} is ${l} meters long, compared with a child about 1.2 meters tall`,
+  timeH:"When did it live?",ago:(a,b)=>`${a} to ${b} million years ago.`,start:"252 million years ago",end:"66",periods:["Triassic","Jurassic","Cretaceous"],
+  speech:(d,nm)=>`I am ${nm}. My name means ${d.means.en}. I was a ${S.en.diet[d.diet].toLowerCase()}, and I was ${d.len} meters long. ${d.fact.en}`,
+  digT:"Fossil dig",digHelp:"Rub the sand with your finger or mouse to brush it away. Who is hiding underneath?",meter:"How much is uncovered",
+  youFound:nm=>`You found a ${nm}!`,meetIt:"Meet it",digAgain:"Dig again",hidden:"Hidden fossil",
+  qNum:(i,n)=>`Question ${i} of ${n}`,shadow:"Whose shadow is this?",eat:nm=>`What did ${nm} eat?`,food:{plants:"Plants",meat:"Meat",fish:"Fish"},
+  longest:"Which one was the longest?",who:f=>`Who am I? "${f}"`,mystery:"Mystery dinosaur shadow",
+  yes:"Yes! You got a star.",no:a=>`Nice try. The answer is ${a}.`,next:"Next question",see:"See my stars",
+  ends:["Good try, explorer!","Great digging!","Dino expert!"],score:(s,b)=>`You got ${s} out of 5. Your best is ${b}.`,again:"Play again",starsAria:(n,o)=>`${n} of ${o} stars`,
+  foot:"Sizes and dates are scientists' best guesses from fossils, and they can change when new bones are found."},
+ zh:{green:"深绿色",pink:"粉色",rainbow:"彩虹",voice:"zh-CN",tabs:["认识","挖掘","问答"],pick:"选一只恐龙",diet:{plants:"吃植物",meat:"吃肉",fish:"吃鱼"},
+  sayLabel:"拼音：",roar:"吼一声",honk:"叫一声",tell:"给我讲讲",means:"名字的意思",length:"身长",weight:"体重",found:"发现地",
+  m:n=>`${n}米`,and:"和",wt:(w,u)=>w.length>1?`${w[0]}到${w[1]}吨`:`约${w[0]}${u==="t"?"吨":"公斤"}`,
+  sizeH:"和你比有多大？",kids:n=>`差不多有${n}个小朋友头对脚躺成一排那么长。`,you:"你",meters:"米",
+  sizeAria:(nm,l)=>`${nm}身长${l}米，旁边是一个大约1.2米高的小朋友`,
+  timeH:"它生活在什么时候？",ago:(a,b)=>`距今约${a*100}万到${b*100}万年前。`,start:"2.52亿年前",end:"6600万年前",periods:["三叠纪","侏罗纪","白垩纪"],
+  speech:(d,nm)=>`我是${nm}。我的名字的意思是${d.means.zh}。我${S.zh.diet[d.diet]}，身长${d.len}米。${d.fact.zh}`,
+  digT:"化石挖掘",digHelp:"用手指或鼠标擦一擦，把沙子扫开。下面藏着谁呢？",meter:"已经挖出多少",
+  youFound:nm=>`你找到了${nm}！`,meetIt:"去认识它",digAgain:"再挖一次",hidden:"藏着的化石",
+  qNum:(i,n)=>`第${i}题，共${n}题`,shadow:"这是谁的影子？",eat:nm=>`${nm}吃什么？`,food:{plants:"植物",meat:"肉",fish:"鱼"},
+  longest:"哪一只最长？",who:f=>`我是谁？“${f}”`,mystery:"神秘恐龙的影子",
+  yes:"答对了！你得到一颗星星。",no:a=>`差一点！答案是${a}。`,next:"下一题",see:"看看我的星星",
+  ends:["不错哦，小探险家！","太棒了！","恐龙专家！"],score:(s,b)=>`你答对了${s}题，共5题。你的最好成绩是${b}题。`,again:"再玩一次",starsAria:(n,o)=>`${o}颗星中得到${n}颗`,
+  foot:"恐龙的大小和年代是科学家根据化石做出的最佳推测，发现新的骨头后可能会改变。"},
+ sv:{green:"Mörkgrön",pink:"Rosa",rainbow:"Regnbåge",voice:"sv-SE",tabs:["Möt","Gräv","Quiz"],pick:"Välj en dinosaurie",diet:{plants:"Växtätare",meat:"Köttätare",fish:"Fiskätare"},
+  sayLabel:"",roar:"Vrål",honk:"Tuta",tell:"Berätta om den",means:"Namnet betyder",length:"Längd",weight:"Vikt",found:"Hittad i",
+  m:n=>`${n} meter`,and:" och ",wt:(w,u)=>w.length>1?`${w[0]} till ${w[1]} ton`:`Cirka ${w[0]} ${u==="t"?"ton":"kg"}`,
+  sizeH:"Hur stor är den bredvid dig?",kids:n=>`Lika lång som ungefär ${n} barn som ligger på rad.`,you:"Du",meters:"meter",
+  sizeAria:(nm,l)=>`${nm} är ${l} meter lång, jämfört med ett barn som är ungefär 1,2 meter`,
+  timeH:"När levde den?",ago:(a,b)=>`För ${a} till ${b} miljoner år sedan.`,start:"För 252 miljoner år sedan",end:"66",periods:["Trias","Jura","Krita"],
+  speech:(d,nm)=>`Jag är ${nm}. Mitt namn betyder ${d.means.sv}. Jag var en ${S.sv.diet[d.diet].toLowerCase()} och var ${fmt(d.len)} meter lång. ${d.fact.sv}`,
+  digT:"Fossilgrävning",digHelp:"Gnugga på sanden med fingret eller musen för att borsta bort den. Vem gömmer sig under?",meter:"Hur mycket som är framgrävt",
+  youFound:nm=>`Du hittade en ${nm}!`,meetIt:"Möt den",digAgain:"Gräv igen",hidden:"Gömt fossil",
+  qNum:(i,n)=>`Fråga ${i} av ${n}`,shadow:"Vems skugga är det här?",eat:nm=>`Vad åt ${nm}?`,food:{plants:"Växter",meat:"Kött",fish:"Fisk"},
+  longest:"Vilken var längst?",who:f=>`Vem är jag? ”${f}”`,mystery:"Hemlig dinosaurieskugga",
+  yes:"Rätt! Du fick en stjärna.",no:a=>`Bra försök. Svaret är ${a}.`,next:"Nästa fråga",see:"Se mina stjärnor",
+  ends:["Bra kämpat, upptäckare!","Jättebra grävt!","Dinoexpert!"],score:(s,b)=>`Du fick ${s} av 5. Ditt bästa är ${b}.`,again:"Spela igen",starsAria:(n,o)=>`${n} av ${o} stjärnor`,
+  foot:"Storlekar och årtal är forskarnas bästa gissningar utifrån fossil, och de kan ändras när nya ben hittas."},
+};
+let lang="en";
+try{const l=localStorage.getItem("dinoLang");if(S[l])lang=l}catch(e){}
+const T=()=>S[lang];
+const fmt=n=>lang==="sv"?String(n).replace(".",","):String(n);
+const nm=d=>lang==="zh"?d.zh[0]:d.name;
+
+/* ---------- Drawings (side view, facing right, feet on the bottom edge) ---------- */
+const eye=(x,y,r=2.4)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="#fff"/><circle cx="${x+.5}" cy="${y}" r="${r*.55}" fill="#1b1b1b"/>`;
+const far=s=>`<g style="filter:brightness(.72)">${s}</g>`;
+const SHAPES={
+ trex:()=>far(`<polygon points="68,40 80,40 82,72 72,72"/><rect x="70" y="70" width="18" height="5" rx="2"/>`)+
+  `<polygon points="62,22 2,31 4,35 62,44"/><ellipse cx="95" cy="32" rx="40" ry="17"/><polygon points="118,20 146,10 152,30 126,44"/>
+  <rect x="140" y="3" width="48" height="22" rx="8"/><rect x="146" y="20" width="36" height="9" rx="4"/>
+  <path d="M130 37 l10 6 l-2 3 l-10 -5z"/><ellipse cx="96" cy="42" rx="15" ry="13"/>
+  <polygon points="90,48 102,48 106,72 96,72"/><rect x="94" y="70" width="20" height="5" rx="2"/>${eye(170,11)}
+  <path d="M152 22.5 h32" stroke="#1b1b1b" stroke-width="1.4" opacity=".45"/>`,
+ trike:()=>far(`<rect x="62" y="40" width="14" height="26" rx="4"/><rect x="118" y="42" width="13" height="24" rx="4"/>`)+
+  `<polygon points="50,26 2,37 4,41 52,44"/><ellipse cx="96" cy="32" rx="52" ry="20"/>
+  <g style="filter:brightness(.85)"><ellipse cx="146" cy="24" rx="13" ry="22"/></g>
+  <polygon points="144,24 178,28 190,40 178,50 150,46"/><polygon points="160,22 197,8 166,30"/><polygon points="180,32 189,21 187,36"/>
+  <rect x="78" y="42" width="15" height="24" rx="4"/><rect x="128" y="44" width="13" height="22" rx="4"/>${eye(166,33)}`,
+ stego:()=>{let p="";for(let i=0;i<9;i++){const x=48+i*12,dx=(x-95)/55,by=52-22*Math.sqrt(Math.max(0,1-dx*dx))+5,h=9+16*(1-Math.abs(x-92)/50);p+=`<polygon points="${x-6},${by} ${x},${by-h} ${x+6},${by}"/>`}
+  return far(p+`<rect x="58" y="62" width="13" height="26" rx="4"/><rect x="126" y="64" width="11" height="24" rx="4"/><polygon points="8,39 2,24 14,40"/><polygon points="18,41 16,25 24,42"/>`)+
+  `<polygon points="46,46 2,38 2,43 46,62"/><ellipse cx="95" cy="52" rx="55" ry="22"/><polygon points="142,48 172,56 172,66 140,66"/>
+  <ellipse cx="180" cy="61" rx="13" ry="7"/><rect x="72" y="62" width="15" height="26" rx="4"/><rect x="136" y="62" width="12" height="26" rx="4"/>${eye(183,59,2)}`},
+ brachio:()=>far(`<rect x="55" y="76" width="12" height="34" rx="4"/><rect x="120" y="72" width="11" height="38" rx="4"/>`)+
+  `<polygon points="42,64 0,82 2,86 46,78"/><ellipse cx="85" cy="70" rx="45" ry="18"/><polygon points="112,64 158,10 170,14 128,78"/>
+  <ellipse cx="170" cy="13" rx="13" ry="7"/><circle cx="165" cy="7" r="5"/>
+  <rect x="68" y="76" width="13" height="34" rx="4"/><rect x="106" y="70" width="13" height="40" rx="4"/>${eye(175,11,2)}`,
+ raptor:()=>far(`<polygon points="88,40 96,40 100,64 94,64"/><rect x="94" y="64" width="16" height="5" rx="2"/>`)+
+  `<polygon points="74,28 2,20 2,25 74,38"/><polygon points="2,20 0,14 12,22"/><ellipse cx="100" cy="32" rx="30" ry="12"/>
+  <polygon points="120,26 140,12 148,20 128,36"/><polygon points="136,8 172,12 177,18 166,21 140,22"/><polygon points="138,9 128,3 140,13"/>
+  <polygon points="116,33 142,41 140,46 118,44"/><ellipse cx="102" cy="40" rx="10" ry="10"/>
+  <polygon points="98,46 106,46 112,64 104,64"/><rect x="104" y="64" width="20" height="6" rx="2"/><polygon points="106,64 103,56 111,63"/>${eye(158,13,2)}`,
+ ankylo:()=>{let s="";for(let x=48;x<=142;x+=10){const dx=(x-95)/55,y=24-15*Math.sqrt(Math.max(0,1-dx*dx));s+=`<polygon points="${x-4},${y+3} ${x},${y-5} ${x+4},${y+3}"/>`}
+  for(let x=58;x<=134;x+=13)s+=`<polygon points="${x-4},34 ${x},42 ${x+4},34"/>`;
+  return far(`<rect x="62" y="32" width="12" height="18" rx="4"/><rect x="124" y="32" width="12" height="18" rx="4"/>`)+
+  `<polygon points="44,21 10,25 10,31 46,33"/><ellipse cx="11" cy="28" rx="10" ry="7"/><g style="filter:brightness(.85)">${s}</g>
+  <ellipse cx="95" cy="24" rx="55" ry="15"/><polygon points="144,18 170,22 174,32 148,36"/><polygon points="162,20 172,13 170,23"/>
+  <rect x="76" y="32" width="13" height="18" rx="4"/><rect x="136" y="32" width="12" height="18" rx="4"/>${eye(161,25,2)}`},
+ para:()=>far(`<rect x="64" y="54" width="13" height="36" rx="4"/><rect x="132" y="58" width="7" height="32" rx="3"/>`)+
+  `<polygon points="48,40 0,46 2,51 50,56"/><ellipse cx="90" cy="46" rx="45" ry="18"/><polygon points="122,40 148,22 158,28 134,54"/>
+  <polygon points="152,24 108,5 111,0 158,18"/><polygon points="146,18 178,24 182,30 176,33 150,32"/>
+  <ellipse cx="82" cy="56" rx="14" ry="12"/><rect x="76" y="58" width="14" height="32" rx="4"/><rect x="124" y="56" width="8" height="34" rx="3"/>${eye(160,24,2)}`,
+ spino:()=>far(`<rect x="72" y="58" width="12" height="22" rx="4"/>`)+
+  `<g style="filter:brightness(.85)"><path d="M58 46 Q96 -6 134 46 Z"/></g><polygon points="52,44 0,40 0,47 52,60"/>
+  <ellipse cx="95" cy="50" rx="45" ry="14"/><polygon points="128,42 150,32 156,40 138,58"/><polygon points="146,28 196,38 196,44 182,46 150,44"/>
+  <polygon points="130,54 140,62 138,65 128,58"/><ellipse cx="90" cy="58" rx="12" ry="10"/><rect x="86" y="60" width="13" height="20" rx="4"/>${eye(160,34,2)}`,
+};
+const dinoSVG=(id,label)=>{const d=byId[id];return `<svg viewBox="-2 -2 204 ${d.h+4}" fill="currentColor" role="img" aria-label="${label??nm(d)}">${SHAPES[id]()}</svg>`};
+
+/* ---------- Size comparison drawn to scale in meters ---------- */
+function sizeSVG(d){
+  const t=T(),L=d.len,H=L*d.h/200,W=L+2,fs=W*.03,top=Math.max(H,1.3)+fs*2.2,bot=fs*2.4;
+  const step=L>14?5:L>5?2:1;let ticks="";
+  for(let m=0;m<=L+.01;m+=step)ticks+=`<line x1="${m}" y1="0" x2="${m}" y2="${fs*.5}" stroke="var(--muted)" stroke-width="1.5" vector-effect="non-scaling-stroke"/><text x="${m}" y="${fs*1.6}" font-size="${fs*.85}" text-anchor="middle" fill="var(--muted)">${m}</text>`;
+  const kx=L+1.2;
+  return `<svg viewBox="${-fs} ${-top} ${W+fs*2} ${top+bot}" role="img" aria-label="${t.sizeAria(nm(d),fmt(L))}" font-family="Nunito,'PingFang SC','Microsoft YaHei',sans-serif" font-weight="800">
+   <g transform="translate(0 ${-H}) scale(${L/200})" style="color:${col(d)}" fill="currentColor">${SHAPES[d.id]()}</g>
+   <g fill="var(--ink)"><circle cx="${kx}" cy="-1.06" r=".14"/><rect x="${kx-.17}" y="-.9" width=".34" height=".46" rx=".1"/>
+    <rect x="${kx-.15}" y="-.48" width=".12" height=".48" rx=".05"/><rect x="${kx+.03}" y="-.48" width=".12" height=".48" rx=".05"/>
+    <rect x="${kx-.27}" y="-.88" width=".09" height=".4" rx=".04"/><rect x="${kx+.18}" y="-.88" width=".09" height=".4" rx=".04"/></g>
+   <text x="${kx}" y="${-1.3-fs*.5}" font-size="${fs}" text-anchor="middle" fill="var(--ink)">${t.you}</text>
+   <line x1="${-fs}" y1="0" x2="${W+fs}" y2="0" stroke="var(--ink)" stroke-width="2" vector-effect="non-scaling-stroke"/>${ticks}
+   <text x="${L+fs*.6}" y="${fs*1.6}" font-size="${fs*.85}" fill="var(--muted)">${t.meters}</text></svg>`;
+}
+function timeline(d){
+  const t=T(),span=252-66,pos=m=>((252-m)/span*100),mid=(d.mya[0]+d.mya[1])/2;
+  return `<div class="bar"><span style="width:${pos(201)}%;background:#E8B49A">${t.periods[0]}</span><span style="width:${pos(145)-pos(201)}%;background:#A8D8B0">${t.periods[1]}</span><span style="flex:1;background:#B4CDF0">${t.periods[2]}</span>
+   <div class="pin" style="left:${Math.min(92,Math.max(8,pos(mid)))}%">${lang==="zh"?nm(d):d.name.split(" ")[0]}</div></div>
+   <div class="scale"><span>${t.start}</span><span>${t.end}</span></div>`;
+}
+
+/* ---------- Sound ---------- */
+let ac;
+function audio(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();if(ac.state==="suspended")ac.resume();return ac}catch(e){return null}}
+function roar(s){
+  const a=audio();if(!a)return;const t=a.currentTime,d=s.d;
+  const buf=a.createBuffer(1,Math.floor(a.sampleRate*d),a.sampleRate),ch=buf.getChannelData(0);for(let i=0;i<ch.length;i++)ch[i]=Math.random()*2-1;
+  const noise=a.createBufferSource();noise.buffer=buf;
+  const osc=a.createOscillator();osc.type=s.honk?"square":"sawtooth";
+  osc.frequency.setValueAtTime(s.f*(s.honk?1:1.5),t);osc.frequency.linearRampToValueAtTime(s.f*(s.honk?1.08:1),t+d*.3);osc.frequency.exponentialRampToValueAtTime(s.f*(s.honk?.9:.6),t+d);
+  const lp=a.createBiquadFilter();lp.type="lowpass";lp.Q.value=s.honk?6:1.5;lp.frequency.setValueAtTime(s.f*(s.honk?4:8),t);lp.frequency.exponentialRampToValueAtTime(s.f*3,t+d);
+  const ng=a.createGain();ng.gain.value=s.n;const og=a.createGain();og.gain.value=s.o;
+  const trem=a.createGain();trem.gain.value=.7;const lfo=a.createOscillator();lfo.frequency.value=s.honk?6:22;const lg=a.createGain();lg.gain.value=.3;lfo.connect(lg).connect(trem.gain);
+  const g=a.createGain();g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.55,t+.1);g.gain.setValueAtTime(.55,t+d*.5);g.gain.exponentialRampToValueAtTime(.0001,t+d);
+  noise.connect(ng).connect(lp);osc.connect(og).connect(lp);lp.connect(trem).connect(g).connect(a.destination);
+  [noise,osc,lfo].forEach(n=>{n.start(t);n.stop(t+d)});
+}
+function chime(ok){
+  const a=audio();if(!a)return;const t=a.currentTime;
+  (ok?[523,659,784]:[220,196]).forEach((f,i)=>{const o=a.createOscillator(),g=a.createGain();o.type=ok?"triangle":"sine";o.frequency.value=f;
+   const s=t+i*.11;g.gain.setValueAtTime(.0001,s);g.gain.exponentialRampToValueAtTime(.3,s+.02);g.gain.exponentialRampToValueAtTime(.0001,s+.35);o.connect(g).connect(a.destination);o.start(s);o.stop(s+.4)});
+}
+const canSpeak="speechSynthesis" in window;
+function speak(text){
+  if(!canSpeak)return;
+  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=T().voice;u.rate=.88;u.pitch=1.05;
+    const v=speechSynthesis.getVoices().find(v=>v.lang.replace("_","-").toLowerCase().startsWith(T().voice.slice(0,2)));if(v)u.voice=v;
+    speechSynthesis.speak(u)}catch(e){}
+}
+
+/* ---------- Meet ---------- */
+const ICON={roar:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9z" fill="currentColor"/><path d="M16 9a4 4 0 010 6M19 6a8 8 0 010 12"/></svg>`,
+ talk:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 01-11.6 7.1L4 20l1-4.6A8 8 0 1121 12z"/></svg>`,
+ star:(on)=>`<svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.6 1.3 6.6L12 17.2l-5.9 3.3 1.3-6.6L2.5 9.3l6.6-.8z" fill="${on?"#F2B01E":"none"}" stroke="${on?"#C98A0C":"var(--line)"}" stroke-width="1.8" stroke-linejoin="round"/></svg>`};
+let current="trex";
+function renderDetail(){
+  const t=T(),d=byId[current],el=document.getElementById("detail");el.style.setProperty("--dino",col(d));
+  const sayLine=lang==="zh"?`<div class="say">${t.sayLabel} <b>${d.zh[1]}</b> · <i lang="la">${d.name}</i></div>`:
+               lang==="en"?`<div class="say">${t.sayLabel} <b>${d.say}</b></div>`:"";
+  const kidsN=Math.max(2,Math.round(d.len/1.2));
+  el.innerHTML=`<div class="stage" id="stage">${dinoSVG(d.id)}</div>
+  <div class="info">
+    <div><span class="chip ${d.diet}">${t.diet[d.diet]}</span></div>
+    <h2>${nm(d)}</h2>${sayLine}
+    <div class="actions">
+      <button class="btn" id="roarBtn">${ICON.roar}${d.snd.honk?t.honk:t.roar}</button>
+      ${canSpeak?`<button class="btn alt" id="hearBtn">${ICON.talk}${t.tell}</button>`:""}
+    </div>
+    <dl class="facts">
+      <div><dt>${t.means}</dt><dd>${d.means[lang]}</dd></div>
+      <div><dt>${t.length}</dt><dd>${t.m(fmt(d.len))}</dd></div>
+      <div><dt>${t.weight}</dt><dd>${t.wt(d.wt.map(fmt),d.unit)}</dd></div>
+      <div><dt>${t.found}</dt><dd>${d.place.map(p=>PLACES[p][lang]).join(t.and)}</dd></div>
+    </dl>
+    <p class="fun">${d.fact[lang]}</p>
+  </div>
+  <div class="wide">
+    <div class="panel size"><h3>${t.sizeH}</h3>${sizeSVG(d)}<p>${t.kids(kidsN)}</p></div>
+    <div class="panel time"><h3>${t.timeH}</h3>${timeline(d)}<p>${t.ago(d.mya[0],d.mya[1])}</p></div>
+  </div>`;
+  document.getElementById("roarBtn").onclick=()=>{roar(d.snd);const s=document.getElementById("stage");s.classList.remove("stomp");void s.offsetWidth;s.classList.add("stomp")};
+  const hb=document.getElementById("hearBtn");if(hb)hb.onclick=()=>speak(t.speech(d,nm(d)));
+  document.querySelectorAll(".card").forEach(c=>c.setAttribute("aria-pressed",c.dataset.id===current));
+}
+function renderGrid(){
+  const t=T();
+  document.getElementById("grid").innerHTML=DINOS.map(d=>`<button class="card" data-id="${d.id}" style="--dino:${col(d)}" aria-pressed="${d.id===current}">
+    <span class="pic">${dinoSVG(d.id)}</span><b>${nm(d)}</b><span class="chip ${d.diet}">${t.diet[d.diet]}</span></button>`).join("");
+  document.querySelectorAll(".card").forEach(c=>c.onclick=()=>{current=c.dataset.id;renderDetail();document.getElementById("detail").scrollIntoView({behavior:"smooth",block:"start"})});
+}
+document.getElementById("logo").innerHTML=dinoSVG("brachio","");
+
+/* ---------- Dig ---------- */
+const sand=document.getElementById("sand"),sctx=sand.getContext("2d");
+let digDino,digDone=false,moves=0,brushing=false,last=null;
+function newDig(){
+  const pool=DINOS.filter(d=>d.id!==(digDino&&digDino.id));digDino=pool[Math.floor(Math.random()*pool.length)];digDone=false;
+  document.getElementById("fossil").innerHTML=dinoSVG(digDino.id,T().hidden);
+  document.getElementById("found").hidden=true;document.getElementById("meter").style.width="0";
+  const r=sand.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
+  sand.width=Math.max(1,Math.round(r.width*dpr));sand.height=Math.max(1,Math.round(r.height*dpr));
+  sctx.globalCompositeOperation="source-over";sctx.globalAlpha=1;
+  const g=sctx.createLinearGradient(0,0,0,sand.height);(theme==="green"?["#5E7A4A","#55703F","#4C6638","#55703F","#5E7A4A","#4C6638","#55703F"]:theme==="pink"?["#FBD3E0","#F9C4D6","#F7B6CC","#F9C4D6","#FBD3E0","#F7B6CC","#F9C4D6"]:["#FFC2C4","#FFD9A8","#FFEFA8","#BDF0CF","#BFE3FB","#CFCBFF","#E6C7F5"]).forEach((c,i,a)=>{g.addColorStop(i/a.length,c);g.addColorStop((i+1)/a.length-.001,c)});sctx.fillStyle=g;sctx.fillRect(0,0,sand.width,sand.height);
+  for(let i=0;i<sand.width*sand.height/90;i++){sctx.fillStyle=Math.random()<.5?"rgba(90,80,140,.18)":"rgba(255,255,255,.55)";sctx.fillRect(Math.random()*sand.width,Math.random()*sand.height,2*dpr,2*dpr)}
+  for(let i=0;i<14;i++){sctx.fillStyle="rgba(120,110,170,.3)";sctx.beginPath();sctx.ellipse(Math.random()*sand.width,Math.random()*sand.height,(4+Math.random()*10)*dpr,(3+Math.random()*6)*dpr,Math.random()*3,0,7);sctx.fill()}
+}
+function brush(x,y){
+  const dpr=window.devicePixelRatio||1,rad=Math.max(22,sand.width/dpr/22)*dpr;
+  sctx.globalCompositeOperation="destination-out";sctx.lineCap="round";sctx.lineWidth=rad*2;
+  sctx.beginPath();sctx.moveTo(last?last.x:x,last?last.y:y);sctx.lineTo(x,y);sctx.stroke();last={x,y};
+  if(++moves%8===0)checkDig();
+}
+function checkDig(){
+  const data=sctx.getImageData(0,0,sand.width,sand.height).data;let clear=0,n=0;
+  for(let i=3;i<data.length;i+=4*37){n++;if(data[i]<40)clear++}
+  const pct=clear/n;document.getElementById("meter").style.width=Math.min(100,pct/.55*100)+"%";
+  if(pct>.55&&!digDone){digDone=true;reveal()}
+}
+function renderFound(){
+  const t=T(),f=document.getElementById("found");if(!digDone){f.hidden=true;return}
+  f.hidden=false;
+  f.innerHTML=`<span>${t.youFound(nm(digDino))}</span><button class="btn alt" id="meetFound">${t.meetIt}</button><button class="btn" id="digAgain">${t.digAgain}</button>`;
+  document.getElementById("meetFound").onclick=()=>{current=digDino.id;renderDetail();show("meet")};
+  document.getElementById("digAgain").onclick=newDig;
+}
+function reveal(){
+  sctx.globalCompositeOperation="destination-out";let a=0;
+  const fade=()=>{a+=.12;sctx.globalAlpha=Math.min(1,a);sctx.fillRect(0,0,sand.width,sand.height);if(a<1)requestAnimationFrame(fade);else sctx.globalAlpha=1};fade();
+  chime(true);renderFound();
+}
+const pt=e=>{const r=sand.getBoundingClientRect(),dpr=sand.width/r.width;return{x:(e.clientX-r.left)*dpr,y:(e.clientY-r.top)*dpr}};
+sand.addEventListener("pointerdown",e=>{if(digDone)return;brushing=true;last=null;sand.setPointerCapture(e.pointerId);const p=pt(e);brush(p.x,p.y)});
+sand.addEventListener("pointermove",e=>{if(!brushing||digDone)return;const p=pt(e);brush(p.x,p.y)});
+["pointerup","pointercancel"].forEach(t=>sand.addEventListener(t,()=>{brushing=false;last=null;if(!digDone)checkDig()}));
+
+/* ---------- Quiz (questions store facts, words are filled in per language) ---------- */
+const quizEl=document.getElementById("view-quiz");
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+let Q=[],qi=0,stars=0,best=0;
+try{best=+localStorage.getItem("dinoBest")||0}catch(e){}
+function makeQuestions(){
+  const ds=shuffle(DINOS);
+  const pick3=ans=>shuffle([ans,...shuffle(DINOS.filter(d=>d.id!==ans.id)).slice(0,2)]).map(d=>({d,ok:d===ans}));
+  const trio=shuffle(DINOS).slice(0,3),max=trio.reduce((a,b)=>b.len>a.len?b:a);
+  return [
+    {type:"who",d:ds[0],opts:pick3(ds[0])},
+    {type:"diet",d:ds[1],opts:["plants","meat","fish"].map(k=>({food:k,ok:k===ds[1].diet}))},
+    {type:"big",opts:trio.map(d=>({d,pic:true,ok:d===max}))},
+    {type:"clue",d:ds[2],opts:pick3(ds[2])},
+    {type:"who",d:ds[3],opts:pick3(ds[3])},
+  ];
+}
+const optLabel=o=>o.food?T().food[o.food]:nm(o.d);
+function qText(q){const t=T();return q.type==="who"?t.shadow:q.type==="diet"?t.eat(nm(q.d)):q.type==="big"?t.longest:t.who(q.d.fact[lang])}
+function startQuiz(){Q=makeQuestions();qi=0;stars=0;renderQ()}
+function starRow(n,of){return `<div class="stars" aria-label="${T().starsAria(n,of)}">${Array.from({length:of},(_,i)=>ICON.star(i<n)).join("")}</div>`}
+function renderQ(){
+  const t=T();
+  if(qi>=Q.length){
+    const msg=t.ends[stars===5?2:stars>=3?1:0];
+    quizEl.innerHTML=`<div class="end">${starRow(stars,5)}<h2>${msg}</h2><p>${t.score(stars,best)}</p><button class="btn" id="again">${t.again}</button></div>`;
+    document.getElementById("again").onclick=startQuiz;return;
+  }
+  const q=Q[qi],done=q.picked!=null;
+  const pic=q.type==="who"?`<div class="q-pic">${dinoSVG(q.d.id,t.mystery)}</div>`:"";
+  quizEl.innerHTML=`<div class="q-top"><h2>${t.qNum(qi+1,Q.length)}</h2>${starRow(stars,5)}</div>
+   <p class="q-text">${qText(q)}</p>${pic}
+   <div class="opts">${q.opts.map((o,i)=>`<button class="opt${done&&o.ok?" right":done&&i===q.picked?" wrong":""}" data-i="${i}" ${done?"disabled":""} style="${o.pic?`color:${col(o.d)}`:""}">${o.pic?dinoSVG(o.d.id):""}<span style="color:var(--ink)">${optLabel(o)}</span></button>`).join("")}</div>
+   <p class="feedback ${done?(q.opts[q.picked].ok?"good":"bad"):""}" id="fb" aria-live="polite">${done?(q.opts[q.picked].ok?t.yes:t.no(optLabel(q.opts.find(o=>o.ok)))):""}</p>
+   <div id="next">${done?`<button class="btn alt" id="nextBtn">${qi===Q.length-1?t.see:t.next}</button>`:""}</div>`;
+  quizEl.querySelectorAll(".opt").forEach(b=>b.onclick=()=>answer(+b.dataset.i));
+  const nb=document.getElementById("nextBtn");
+  if(nb)nb.onclick=()=>{qi++;if(qi>=Q.length){if(stars>best){best=stars;try{localStorage.setItem("dinoBest",best)}catch(e){}}chime(stars>=3)}renderQ()};
+}
+function answer(i){
+  const q=Q[qi];if(q.picked!=null)return;q.picked=i;
+  if(q.opts[i].ok)stars++;chime(q.opts[i].ok);renderQ();
+}
+
+/* ---------- Language and tabs ---------- */
+function applyLang(){
+  const t=T();document.documentElement.lang=lang==="zh"?"zh-CN":lang;
+  ["meet","dig","quiz"].forEach((k,i)=>document.getElementById("tab-"+k).textContent=t.tabs[i]);
+  document.querySelectorAll(".langs button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===lang));
+  document.getElementById("pickTitle").textContent=t.pick;
+  document.getElementById("digTitle").textContent=t.digT;
+  document.getElementById("digHelp").textContent=t.digHelp;
+  document.getElementById("meterBox").setAttribute("aria-label",t.meter);
+  document.getElementById("foot").textContent=t.foot;
+  document.querySelector(".tp").textContent=t.pink;document.querySelector(".tg").textContent=t.green;document.querySelector('[data-theme-pick="green"]').setAttribute("aria-label",t.green);document.querySelector(".tr").textContent=t.rainbow;
+  document.querySelector('[data-theme-pick="pink"]').setAttribute("aria-label",t.pink);document.querySelector('[data-theme-pick="rainbow"]').setAttribute("aria-label",t.rainbow);
+  renderGrid();renderDetail();
+  if(digDino){document.querySelector("#fossil svg").setAttribute("aria-label",t.hidden);renderFound()}
+  if(Q.length)renderQ();
+}
+document.querySelectorAll(".langs button").forEach(b=>b.onclick=()=>{lang=b.dataset.lang;try{localStorage.setItem("dinoLang",lang)}catch(e){};if(canSpeak)try{speechSynthesis.cancel()}catch(e){};applyLang()});
+function applyTheme(){
+  document.documentElement.classList.toggle("pink",theme==="pink");document.documentElement.classList.toggle("green",theme==="green");
+  document.querySelectorAll(".themes button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.themePick===theme));
+}
+document.querySelectorAll(".themes button").forEach(b=>b.onclick=()=>{theme=b.dataset.themePick;try{localStorage.setItem("dinoTheme",theme)}catch(e){}
+  applyTheme();applyLang();if(digDino&&!digDone)newDig()});
+applyTheme();
+let digReady=false;
+function show(v){
+  document.querySelectorAll("nav button").forEach(b=>b.setAttribute("aria-selected",b.dataset.view===v));
+  ["meet","dig","quiz"].forEach(k=>document.getElementById("view-"+k).hidden=k!==v);
+  if(v==="dig"&&!digReady){digReady=true;newDig()}
+  if(v==="quiz"&&!Q.length)startQuiz();
+  window.scrollTo({top:0});
+}
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>show(b.dataset.view));
+if(canSpeak)try{speechSynthesis.getVoices()}catch(e){}
+applyLang();
+</script>
+</body>
+</html>
