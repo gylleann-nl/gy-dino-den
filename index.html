@@ -150,7 +150,7 @@ nav button:nth-child(4)[aria-selected="true"]{background:#1F9D5A}
 .paper svg{display:block;width:100%;height:auto}
 #paintSvg .paint{stroke:#2B2350;stroke-width:2;vector-effect:non-scaling-stroke;stroke-linejoin:round;cursor:pointer}
 .swatches{display:flex;flex-wrap:wrap;gap:8px}
-.swatch{width:44px;height:44px;border-radius:50%;border:3px solid var(--surface);box-shadow:0 0 0 2px var(--line)}
+.swatch{width:42px;height:42px;border-radius:50%;border:3px solid var(--surface);box-shadow:0 0 0 2px var(--line)}
 .swatch[aria-pressed="true"]{box-shadow:0 0 0 3px var(--ink);transform:scale(1.12)}
 footer{color:var(--muted);font-size:.85rem;text-align:center}
 </style>
@@ -636,8 +636,12 @@ applyTheme();
 let digReady=false;
 /* ---------- Colouring ---------- */
 const VIEWS=["meet","dig","quiz","colour"];
-const PALETTE=["#FF5A5F","#FF9F1C","#FFD23F","#3BCE7A","#1F8A4C","#7FD8F5","#3FA9F5","#6C63FF","#B05CE6","#FF6FB5","#8B5A2B","#D9B38C","#9AA0A6","#2B2350","#FFFFFF"];
-let paintColor=PALETTE[0],colourDino="trex",colourReady=false;
+/* Grouped by hue, light to dark within each group. */
+const PALETTE=["#FFB3B5","#FF5A5F","#C81D25","#FFD0A1","#FF9F1C","#D96C06","#FFF1A8","#FFD23F","#E0A800",
+  "#C8F0A8","#3BCE7A","#1F8A4C","#0B5D3B","#9DEBE0","#2EC4B6","#7FD8F5","#3FA9F5","#1B5FBF",
+  "#C9C4FF","#6C63FF","#B05CE6","#6A1B9A","#FFC8E1","#FF6FB5","#D6247A",
+  "#F3D9C0","#D9B38C","#8B5A2B","#5C3A1E","#E3E5E8","#9AA0A6","#555B63","#2B2350","#FFFFFF"];
+let paintColor=PALETTE[1],colourDino="trex",colourReady=false;
 /* Pictures are kept in this device's browser, so each child's colouring is still there next time. */
 let fills={};
 try{const f=JSON.parse(localStorage.getItem("dinoPictures")||"{}");if(f&&typeof f==="object")fills=f;const c=localStorage.getItem("dinoPictureDino");if(c&&SHAPES[c])colourDino=c}catch(e){}
@@ -680,7 +684,7 @@ function renderSwatches(){
 function bloop(){whenReady(a=>{const t=a.currentTime+.01,o=a.createOscillator(),g=a.createGain();o.type="sine";o.frequency.setValueAtTime(380,t);o.frequency.exponentialRampToValueAtTime(760,t+.09);
   g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.2,t+.015);g.gain.exponentialRampToValueAtTime(.0001,t+.16);o.connect(g).connect(a.destination);o.start(t);o.stop(t+.18)})}
 document.getElementById("magicBtn").onclick=()=>{
-  const fun=PALETTE.slice(0,13),f=[];
+  const fun=PALETTE.filter(c=>c!=="#FFFFFF"&&c!=="#2B2350"),f=[];
   document.querySelectorAll("#paintSvg .paint").forEach((el,i)=>{const c=fun[Math.floor(Math.random()*fun.length)];f[i]=c;el.setAttribute("fill",c)});
   fills[colourDino]=f;savePictures();chime(true);
 };
