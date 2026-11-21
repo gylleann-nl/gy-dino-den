@@ -39,12 +39,7 @@ header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-betw
 nav{display:flex;gap:6px;background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:5px}
 nav button{border:0;background:none;border-radius:999px;padding:10px 20px;font-family:var(--display);font-weight:600;font-size:1.1rem;color:var(--muted)}
 nav button[aria-selected="true"]{color:#fff}
-:root.pink{--pit:#C98DA4; --bg:#FDE4EE; --surface:#FFF5F9; --ink:#5A2E44; --muted:#9A6A82;
-  --fern:#E27BAA; --lava:#D9578A; --line:#F6C6DA; --sand:#FAD3DF;
-  --plant:#3C9468; --meat:#D2486A; --fish:#4C88C4;
-  --r1:#F59AB9; --r2:#F7AFC6; --r3:#FBC8D8; --r4:#F2A3C7; --r5:#E58BB5; --r6:#D9578A; --r7:#F7AFC6}
-:root.pink nav button[aria-selected="true"]{background:var(--lava)!important}
-:root.green{--pit:#0B1C13; --bg:#0F2419; --surface:#173323; --ink:#E6F4E8; --muted:#A1C2AA;
+ :root.green{--pit:#0B1C13; --bg:#0F2419; --surface:#173323; --ink:#E6F4E8; --muted:#A1C2AA;
   --fern:#2F9158; --lava:#D9622B; --line:#2A4B37; --sand:#3D5A3A;
   --plant:#7FDB9E; --meat:#FF8A7A; --fish:#7EC3F2; color-scheme:dark;
   --r1:#1E5B3A; --r2:#2F7D4A; --r3:#4CA66A; --r4:#7FCB8A; --r5:#4CA66A; --r6:#2F7D4A; --r7:#1E5B3A}
@@ -55,7 +50,6 @@ nav button[aria-selected="true"]{color:#fff}
 .themes{display:flex;gap:4px;background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:4px}
 .themes button{border:0;background:none;border-radius:999px;padding:7px 12px;font-weight:800;font-size:.95rem;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
 .themes button i{width:14px;height:14px;border-radius:50%;display:inline-block}
-.themes button[data-theme-pick="pink"] i{background:#F59AB9}
 .themes button[data-theme-pick="rainbow"] i{background:conic-gradient(#FF5A5F,#FF9F1C,#FFD23F,#3BCE7A,#3FA9F5,#6C63FF,#B05CE6,#FF5A5F)}
 .themes button[aria-pressed="true"]{background:var(--fern);color:#fff}
 nav button:nth-child(1)[aria-selected="true"]{background:var(--r1)}
@@ -159,7 +153,6 @@ footer{color:var(--muted);font-size:.85rem;text-align:center}
         <button role="tab" id="tab-quiz" aria-selected="false" data-view="quiz"></button>
       </nav>
       <div class="themes" role="group" aria-label="Colors">
-        <button data-theme-pick="pink" aria-label="Pink"><i></i><span class="tp"></span></button>
         <button data-theme-pick="rainbow" aria-label="Rainbow"><i></i><span class="tr"></span></button>
         <button data-theme-pick="green" aria-label="Dark green"><i></i><span class="tg"></span></button>
       </div>
@@ -221,16 +214,15 @@ const DINOS=[
   means:{en:"Spine lizard",zh:"有棘刺的蜥蜴",sv:"Taggödla"},
   fact:{en:"It spent lots of time in rivers and caught fish, a bit like a giant crocodile.",zh:"它常常待在河里抓鱼，有点像一条巨大的鳄鱼。",sv:"Den tillbringade mycket tid i floder och fångade fisk, lite som en jättelik krokodil."}},
 ];
-const PINK={trex:"#E97FA3",trike:"#F0A08A",stego:"#EDB46E",brachio:"#B49BE6",raptor:"#D98FD0",ankylo:"#8FC9A6",para:"#86BCE6",spino:"#F294BE"};
-let theme="rainbow";try{const t=localStorage.getItem("dinoTheme");if(["pink","rainbow","green"].includes(t))theme=t}catch(e){}
+let theme="rainbow";try{const t=localStorage.getItem("dinoTheme");if(["rainbow","green"].includes(t))theme=t}catch(e){}
 const GREEN={trex:"#E8735A",trike:"#8FD16A",stego:"#E8B64A",brachio:"#5FC7A8",raptor:"#B48BE0",ankylo:"#B9C76A",para:"#6CB4E0",spino:"#E07FA8"};
-const col=d=>theme==="pink"?PINK[d.id]:theme==="green"?GREEN[d.id]:d.color;
+const col=d=>theme==="green"?GREEN[d.id]:d.color;
 const byId=Object.fromEntries(DINOS.map(d=>[d.id,d]));
 const PLACES={na:{en:"North America",zh:"北美洲",sv:"Nordamerika"},pt:{en:"Portugal",zh:"葡萄牙",sv:"Portugal"},mn:{en:"Mongolia",zh:"蒙古",sv:"Mongoliet"},naf:{en:"North Africa",zh:"北非",sv:"Nordafrika"}};
 
 /* ---------- Words ---------- */
 const S={
- en:{green:"Dark green",pink:"Pink",rainbow:"Rainbow",voice:"en-US",tabs:["Meet","Dig","Quiz"],pick:"Pick a dinosaur",diet:{plants:"Plant eater",meat:"Meat eater",fish:"Fish eater"},
+ en:{green:"Dark green",rainbow:"Rainbow",voice:"en-US",tabs:["Meet","Dig","Quiz"],pick:"Pick a dinosaur",diet:{plants:"Plant eater",meat:"Meat eater",fish:"Fish eater"},
   sayLabel:"Say it:",roar:"Roar",honk:"Honk",tell:"Tell me about it",means:"Name means",length:"Length",weight:"Weight",found:"Found in",
   m:n=>`${n} meters`,and:" and ",wt:(w,u)=>w.length>1?`${w[0]} to ${w[1]} tonnes`:`About ${w[0]} ${u==="t"?"tonnes":"kg"}`,
   sizeH:"How big next to you?",kids:n=>`As long as about ${n} kids lying head to toe.`,you:"You",meters:"meters",
@@ -244,7 +236,7 @@ const S={
   yes:"Yes! You got a star.",no:a=>`Nice try. The answer is ${a}.`,next:"Next question",see:"See my stars",
   ends:["Good try, explorer!","Great digging!","Dino expert!"],score:(s,b)=>`You got ${s} out of 5. Your best is ${b}.`,again:"Play again",starsAria:(n,o)=>`${n} of ${o} stars`,
   foot:"Sizes and dates are scientists' best guesses from fossils, and they can change when new bones are found."},
- zh:{green:"深绿色",pink:"粉色",rainbow:"彩虹",voice:"zh-CN",tabs:["认识","挖掘","问答"],pick:"选一只恐龙",diet:{plants:"吃植物",meat:"吃肉",fish:"吃鱼"},
+ zh:{green:"深绿色",rainbow:"彩虹",voice:"zh-CN",tabs:["认识","挖掘","问答"],pick:"选一只恐龙",diet:{plants:"吃植物",meat:"吃肉",fish:"吃鱼"},
   sayLabel:"拼音：",roar:"吼一声",honk:"叫一声",tell:"给我讲讲",means:"名字的意思",length:"身长",weight:"体重",found:"发现地",
   m:n=>`${n}米`,and:"和",wt:(w,u)=>w.length>1?`${w[0]}到${w[1]}吨`:`约${w[0]}${u==="t"?"吨":"公斤"}`,
   sizeH:"和你比有多大？",kids:n=>`差不多有${n}个小朋友头对脚躺成一排那么长。`,you:"你",meters:"米",
@@ -258,7 +250,7 @@ const S={
   yes:"答对了！你得到一颗星星。",no:a=>`差一点！答案是${a}。`,next:"下一题",see:"看看我的星星",
   ends:["不错哦，小探险家！","太棒了！","恐龙专家！"],score:(s,b)=>`你答对了${s}题，共5题。你的最好成绩是${b}题。`,again:"再玩一次",starsAria:(n,o)=>`${o}颗星中得到${n}颗`,
   foot:"恐龙的大小和年代是科学家根据化石做出的最佳推测，发现新的骨头后可能会改变。"},
- sv:{green:"Mörkgrön",pink:"Rosa",rainbow:"Regnbåge",voice:"sv-SE",tabs:["Möt","Gräv","Quiz"],pick:"Välj en dinosaurie",diet:{plants:"Växtätare",meat:"Köttätare",fish:"Fiskätare"},
+ sv:{green:"Mörkgrön",rainbow:"Regnbåge",voice:"sv-SE",tabs:["Möt","Gräv","Quiz"],pick:"Välj en dinosaurie",diet:{plants:"Växtätare",meat:"Köttätare",fish:"Fiskätare"},
   sayLabel:"",roar:"Vrål",honk:"Tuta",tell:"Berätta om den",means:"Namnet betyder",length:"Längd",weight:"Vikt",found:"Hittad i",
   m:n=>`${n} meter`,and:" och ",wt:(w,u)=>w.length>1?`${w[0]} till ${w[1]} ton`:`Cirka ${w[0]} ${u==="t"?"ton":"kg"}`,
   sizeH:"Hur stor är den bredvid dig?",kids:n=>`Lika lång som ungefär ${n} barn som ligger på rad.`,you:"Du",meters:"meter",
@@ -427,7 +419,7 @@ function newDig(){
   const r=sand.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
   sand.width=Math.max(1,Math.round(r.width*dpr));sand.height=Math.max(1,Math.round(r.height*dpr));
   sctx.globalCompositeOperation="source-over";sctx.globalAlpha=1;
-  const g=sctx.createLinearGradient(0,0,0,sand.height);(theme==="green"?["#5E7A4A","#55703F","#4C6638","#55703F","#5E7A4A","#4C6638","#55703F"]:theme==="pink"?["#FBD3E0","#F9C4D6","#F7B6CC","#F9C4D6","#FBD3E0","#F7B6CC","#F9C4D6"]:["#FFC2C4","#FFD9A8","#FFEFA8","#BDF0CF","#BFE3FB","#CFCBFF","#E6C7F5"]).forEach((c,i,a)=>{g.addColorStop(i/a.length,c);g.addColorStop((i+1)/a.length-.001,c)});sctx.fillStyle=g;sctx.fillRect(0,0,sand.width,sand.height);
+  const g=sctx.createLinearGradient(0,0,0,sand.height);(theme==="green"?["#5E7A4A","#55703F","#4C6638","#55703F","#5E7A4A","#4C6638","#55703F"]:["#FFC2C4","#FFD9A8","#FFEFA8","#BDF0CF","#BFE3FB","#CFCBFF","#E6C7F5"]).forEach((c,i,a)=>{g.addColorStop(i/a.length,c);g.addColorStop((i+1)/a.length-.001,c)});sctx.fillStyle=g;sctx.fillRect(0,0,sand.width,sand.height);
   for(let i=0;i<sand.width*sand.height/90;i++){sctx.fillStyle=Math.random()<.5?"rgba(90,80,140,.18)":"rgba(255,255,255,.55)";sctx.fillRect(Math.random()*sand.width,Math.random()*sand.height,2*dpr,2*dpr)}
   for(let i=0;i<14;i++){sctx.fillStyle="rgba(120,110,170,.3)";sctx.beginPath();sctx.ellipse(Math.random()*sand.width,Math.random()*sand.height,(4+Math.random()*10)*dpr,(3+Math.random()*6)*dpr,Math.random()*3,0,7);sctx.fill()}
 }
@@ -514,15 +506,15 @@ function applyLang(){
   document.getElementById("digHelp").textContent=t.digHelp;
   document.getElementById("meterBox").setAttribute("aria-label",t.meter);
   document.getElementById("foot").textContent=t.foot;
-  document.querySelector(".tp").textContent=t.pink;document.querySelector(".tg").textContent=t.green;document.querySelector('[data-theme-pick="green"]').setAttribute("aria-label",t.green);document.querySelector(".tr").textContent=t.rainbow;
-  document.querySelector('[data-theme-pick="pink"]').setAttribute("aria-label",t.pink);document.querySelector('[data-theme-pick="rainbow"]').setAttribute("aria-label",t.rainbow);
+  document.querySelector(".tg").textContent=t.green;document.querySelector('[data-theme-pick="green"]').setAttribute("aria-label",t.green);document.querySelector(".tr").textContent=t.rainbow;
+  document.querySelector('[data-theme-pick="rainbow"]').setAttribute("aria-label",t.rainbow);
   renderGrid();renderDetail();
   if(digDino){document.querySelector("#fossil svg").setAttribute("aria-label",t.hidden);renderFound()}
   if(Q.length)renderQ();
 }
 document.querySelectorAll(".langs button").forEach(b=>b.onclick=()=>{lang=b.dataset.lang;try{localStorage.setItem("dinoLang",lang)}catch(e){};if(canSpeak)try{speechSynthesis.cancel()}catch(e){};applyLang()});
 function applyTheme(){
-  document.documentElement.classList.toggle("pink",theme==="pink");document.documentElement.classList.toggle("green",theme==="green");
+  document.documentElement.classList.toggle("green",theme==="green");
   document.querySelectorAll(".themes button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.themePick===theme));
 }
 document.querySelectorAll(".themes button").forEach(b=>b.onclick=()=>{theme=b.dataset.themePick;try{localStorage.setItem("dinoTheme",theme)}catch(e){}

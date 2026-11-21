@@ -11,7 +11,7 @@ A dinosaur app for kids. It's a single web page with no build step and no depend
 - **Dig:** brush away the sand to uncover a hidden fossil.
 - **Quiz:** 5 questions with stars and a saved best score.
 - **Languages:** English, 中文 (Mandarin, with pinyin) and Svenska.
-- **Themes:** Pink, Rainbow and Dark green.
+- **Themes:** Rainbow and Dark green.
 
 ## Run it
 
