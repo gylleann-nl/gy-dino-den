@@ -4,7 +4,7 @@ A dinosaur app for kids. It's a single web page with no build step and no depend
 
 ## Features
 
-- **Meet:** 8 dinosaurs, each with:
+- **Meet:** 16 dinosaurs, each with:
   - a roar sound and read-aloud facts
   - a drawing to scale next to a child
   - a timeline of when it lived

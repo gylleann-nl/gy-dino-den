@@ -90,7 +90,8 @@ nav button:nth-child(3)[aria-selected="true"]{background:var(--r6)}
 .panel h3{font-size:1.15rem;margin-bottom:6px}
 .panel p{margin:4px 0 0;color:var(--muted);font-size:.95rem}
 .size svg{width:100%;height:auto;display:block}
-.time .bar{display:flex;height:34px;border-radius:10px;overflow:hidden;position:relative;margin-top:30px}
+.time .bar span:first-child{border-radius:10px 0 0 10px}.time .bar span:nth-child(3){border-radius:0 10px 10px 0}
+.time .bar{display:flex;height:34px;border-radius:10px;position:relative;margin-top:30px}
 .time .bar span{display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;color:#3A2430;letter-spacing:.03em}
 .time .pin{position:absolute;top:-28px;transform:translateX(-50%);font-family:var(--display);font-weight:600;font-size:.85rem;white-space:nowrap;color:var(--ink)}
 .time .pin::after{content:"";display:block;width:3px;height:30px;background:var(--ink);margin:2px auto 0}
@@ -213,19 +214,43 @@ const DINOS=[
  {id:"spino",name:"Spinosaurus",zh:["棘龙","jí lóng"],say:"SPY-no-SORE-us",diet:"fish",len:14,wt:[7],unit:"t",mya:[99,93],place:["naf"],color:"#FF6FB5",h:80,snd:{f:75,n:.8,o:.6,d:1.4},
   means:{en:"Spine lizard",zh:"有棘刺的蜥蜴",sv:"Taggödla"},
   fact:{en:"It spent lots of time in rivers and caught fish, a bit like a giant crocodile.",zh:"它常常待在河里抓鱼，有点像一条巨大的鳄鱼。",sv:"Den tillbringade mycket tid i floder och fångade fisk, lite som en jättelik krokodil."}},
+ {id:"allo",name:"Allosaurus",zh:["异特龙","yì tè lóng"],say:"AL-oh-SORE-us",diet:"meat",len:8.5,wt:[2],unit:"t",mya:[155,145],place:["na","pt"],color:"#FF7A3D",h:75,snd:{f:70,n:.8,o:.6,d:1.4},
+  means:{en:"Different lizard",zh:"与众不同的蜥蜴",sv:"Annorlunda ödla"},
+  fact:{en:"It was a top hunter in the Jurassic, many millions of years before T. rex lived.",zh:"它是侏罗纪的顶级猎手，比霸王龙早出现了几千万年。",sv:"Den var ett av de största rovdjuren under jura, många miljoner år innan T. rex levde."}},
+ {id:"diplo",name:"Diplodocus",zh:["梁龙","liáng lóng"],say:"dih-PLOD-oh-kus",diet:"plants",len:26,wt:[12,15],unit:"t",mya:[154,152],place:["na"],color:"#2EC4B6",h:46,snd:{f:44,n:.4,o:.8,d:2.2},
+  means:{en:"Double beam",zh:"双梁",sv:"Dubbelbjälke"},
+  fact:{en:"Its long, thin tail may have cracked like a whip.",zh:"它又长又细的尾巴也许能像鞭子一样甩得啪啪响。",sv:"Dess långa, tunna svans kunde kanske smälla som en piska."}},
+ {id:"pachy",name:"Pachycephalosaurus",zh:["肿头龙","zhǒng tóu lóng"],say:"PAK-ee-SEF-uh-loh-SORE-us",diet:"plants",len:4.5,wt:[400],unit:"kg",mya:[70,66],place:["na"],color:"#FFB627",h:80,snd:{f:160,n:.6,o:.6,d:.8},
+  means:{en:"Thick-headed lizard",zh:"头很厚的蜥蜴",sv:"Tjockhövdad ödla"},
+  fact:{en:"The top of its skull was a dome of solid bone up to 25 cm thick.",zh:"它头顶的骨头像一个圆顶，最厚的地方有25厘米。",sv:"Toppen av skallen var en kupol av ben som var upp till 25 cm tjock."}},
+ {id:"iguano",name:"Iguanodon",zh:["禽龙","qín lóng"],say:"ih-GWAH-noh-don",diet:"plants",len:10,wt:[3,4],unit:"t",mya:[126,122],place:["eu"],color:"#7BC950",h:75,snd:{f:120,n:.3,o:.9,d:1,honk:1},
+  means:{en:"Iguana tooth",zh:"鬣蜥的牙齿",sv:"Leguantand"},
+  fact:{en:"It had a spiky thumb, and in 1825 it became one of the first dinosaurs ever named.",zh:"它的大拇指像一根尖刺。1825年，它成为最早被命名的恐龙之一。",sv:"Den hade en spetsig tumme, och 1825 blev den en av de första dinosaurierna som fick ett namn."}},
+ {id:"carno",name:"Carnotaurus",zh:["食肉牛龙","shí ròu niú lóng"],say:"KAR-noh-TORE-us",diet:"meat",len:8,wt:[1.5],unit:"t",mya:[72,69],place:["sa"],color:"#E63973",h:75,snd:{f:85,n:.9,o:.5,d:1.2},
+  means:{en:"Meat-eating bull",zh:"吃肉的公牛",sv:"Köttätande tjur"},
+  fact:{en:"It had two horns above its eyes like a bull, and its arms were even tinier than a T. rex's.",zh:"它的眼睛上方长着两只像公牛一样的角，它的手臂比霸王龙的还要小。",sv:"Den hade två horn ovanför ögonen som en tjur, och armarna var ännu mindre än T. rex armar."}},
+ {id:"dilo",name:"Dilophosaurus",zh:["双脊龙","shuāng jǐ lóng"],say:"dy-LOF-oh-SORE-us",diet:"meat",len:7,wt:[400],unit:"kg",mya:[193,183],place:["na"],color:"#4D7CFE",h:75,snd:{f:200,n:.7,o:.6,d:.9},
+  means:{en:"Two-crested lizard",zh:"有两个冠的蜥蜴",sv:"Tvåkammad ödla"},
+  fact:{en:"It had two thin crests on its head. In movies it spits venom, but scientists have found no proof of that.",zh:"它头上有两片薄薄的冠。电影里它会喷毒液，但科学家没有找到任何证据。",sv:"Den hade två tunna kammar på huvudet. I filmer sprutar den gift, men forskarna har inga bevis för det."}},
+ {id:"therizino",name:"Therizinosaurus",zh:["镰刀龙","lián dāo lóng"],say:"THERR-ih-ZEEN-oh-SORE-us",diet:"plants",len:10,wt:[5],unit:"t",mya:[70,68],place:["mn"],color:"#9D4EDD",h:100,snd:{f:95,n:.6,o:.6,d:1.2},
+  means:{en:"Scythe lizard",zh:"镰刀蜥蜴",sv:"Liebödla"},
+  fact:{en:"Its giant claws were about as long as your arm, but it ate plants and used them to pull down branches.",zh:"它巨大的爪子差不多有你的手臂那么长，可是它吃植物，用爪子把树枝拉下来。",sv:"Dess jättelika klor var ungefär lika långa som din arm, men den åt växter och drog ner grenar med dem."}},
+ {id:"micro",name:"Microraptor",zh:["小盗龙","xiǎo dào lóng"],say:"MY-kroh-rap-tor",diet:"meat",len:.8,wt:[1],unit:"kg",mya:[125,120],place:["cn"],color:"#1FB5E0",h:70,snd:{f:900,n:.4,o:.7,d:.4},
+  means:{en:"Small thief",zh:"小小偷",sv:"Liten tjuv"},
+  fact:{en:"It had feathered wings on its arms and its legs, and could glide from tree to tree.",zh:"它的手臂和腿上都长着带羽毛的翅膀，能在树林之间滑翔。",sv:"Den hade fjäderklädda vingar på både armar och ben och kunde glidflyga från träd till träd."}},
 ];
 let theme="rainbow";try{const t=localStorage.getItem("dinoTheme");if(["rainbow","green"].includes(t))theme=t}catch(e){}
-const GREEN={trex:"#E8735A",trike:"#8FD16A",stego:"#E8B64A",brachio:"#5FC7A8",raptor:"#B48BE0",ankylo:"#B9C76A",para:"#6CB4E0",spino:"#E07FA8"};
+const GREEN={trex:"#E8735A",trike:"#8FD16A",stego:"#E8B64A",brachio:"#5FC7A8",raptor:"#B48BE0",ankylo:"#B9C76A",para:"#6CB4E0",spino:"#E07FA8",allo:"#F0915A",diplo:"#7FD8C8",pachy:"#F2C86A",iguano:"#A7D86A",carno:"#EF7A8E",dilo:"#8FA8F0",therizino:"#C29BE8",micro:"#7FD0EE"};
 const col=d=>theme==="green"?GREEN[d.id]:d.color;
 const byId=Object.fromEntries(DINOS.map(d=>[d.id,d]));
-const PLACES={na:{en:"North America",zh:"北美洲",sv:"Nordamerika"},pt:{en:"Portugal",zh:"葡萄牙",sv:"Portugal"},mn:{en:"Mongolia",zh:"蒙古",sv:"Mongoliet"},naf:{en:"North Africa",zh:"北非",sv:"Nordafrika"}};
+const PLACES={eu:{en:"Europe",zh:"欧洲",sv:"Europa"},sa:{en:"South America",zh:"南美洲",sv:"Sydamerika"},cn:{en:"China",zh:"中国",sv:"Kina"},na:{en:"North America",zh:"北美洲",sv:"Nordamerika"},pt:{en:"Portugal",zh:"葡萄牙",sv:"Portugal"},mn:{en:"Mongolia",zh:"蒙古",sv:"Mongoliet"},naf:{en:"North Africa",zh:"北非",sv:"Nordafrika"}};
 
 /* ---------- Words ---------- */
 const S={
  en:{green:"Dark green",rainbow:"Rainbow",voice:"en-US",tabs:["Meet","Dig","Quiz"],pick:"Pick a dinosaur",diet:{plants:"Plant eater",meat:"Meat eater",fish:"Fish eater"},
   sayLabel:"Say it:",roar:"Roar",honk:"Honk",tell:"Tell me about it",means:"Name means",length:"Length",weight:"Weight",found:"Found in",
   m:n=>`${n} meters`,and:" and ",wt:(w,u)=>w.length>1?`${w[0]} to ${w[1]} tonnes`:`About ${w[0]} ${u==="t"?"tonnes":"kg"}`,
-  sizeH:"How big next to you?",kids:n=>`As long as about ${n} kids lying head to toe.`,you:"You",meters:"meters",
+  sizeH:"How big next to you?",shorter:"Shorter than you!",kids:n=>`As long as about ${n} kids lying head to toe.`,you:"You",meters:"meters",
   sizeAria:(nm,l)=>`${nm} is ${l} meters long, compared with a child about 1.2 meters tall`,
   timeH:"When did it live?",ago:(a,b)=>`${a} to ${b} million years ago.`,start:"252 million years ago",end:"66",periods:["Triassic","Jurassic","Cretaceous"],
   speech:(d,nm)=>`I am ${nm}. My name means ${d.means.en}. I was a ${S.en.diet[d.diet].toLowerCase()}, and I was ${d.len} meters long. ${d.fact.en}`,
@@ -239,7 +264,7 @@ const S={
  zh:{green:"深绿色",rainbow:"彩虹",voice:"zh-CN",tabs:["认识","挖掘","问答"],pick:"选一只恐龙",diet:{plants:"吃植物",meat:"吃肉",fish:"吃鱼"},
   sayLabel:"拼音：",roar:"吼一声",honk:"叫一声",tell:"给我讲讲",means:"名字的意思",length:"身长",weight:"体重",found:"发现地",
   m:n=>`${n}米`,and:"和",wt:(w,u)=>w.length>1?`${w[0]}到${w[1]}吨`:`约${w[0]}${u==="t"?"吨":"公斤"}`,
-  sizeH:"和你比有多大？",kids:n=>`差不多有${n}个小朋友头对脚躺成一排那么长。`,you:"你",meters:"米",
+  sizeH:"和你比有多大？",shorter:"比你还短！",kids:n=>`差不多有${n}个小朋友头对脚躺成一排那么长。`,you:"你",meters:"米",
   sizeAria:(nm,l)=>`${nm}身长${l}米，旁边是一个大约1.2米高的小朋友`,
   timeH:"它生活在什么时候？",ago:(a,b)=>`距今约${a*100}万到${b*100}万年前。`,start:"2.52亿年前",end:"6600万年前",periods:["三叠纪","侏罗纪","白垩纪"],
   speech:(d,nm)=>`我是${nm}。我的名字的意思是${d.means.zh}。我${S.zh.diet[d.diet]}，身长${d.len}米。${d.fact.zh}`,
@@ -253,7 +278,7 @@ const S={
  sv:{green:"Mörkgrön",rainbow:"Regnbåge",voice:"sv-SE",tabs:["Möt","Gräv","Quiz"],pick:"Välj en dinosaurie",diet:{plants:"Växtätare",meat:"Köttätare",fish:"Fiskätare"},
   sayLabel:"",roar:"Vrål",honk:"Tuta",tell:"Berätta om den",means:"Namnet betyder",length:"Längd",weight:"Vikt",found:"Hittad i",
   m:n=>`${n} meter`,and:" och ",wt:(w,u)=>w.length>1?`${w[0]} till ${w[1]} ton`:`Cirka ${w[0]} ${u==="t"?"ton":"kg"}`,
-  sizeH:"Hur stor är den bredvid dig?",kids:n=>`Lika lång som ungefär ${n} barn som ligger på rad.`,you:"Du",meters:"meter",
+  sizeH:"Hur stor är den bredvid dig?",shorter:"Kortare än du!",kids:n=>`Lika lång som ungefär ${n} barn som ligger på rad.`,you:"Du",meters:"meter",
   sizeAria:(nm,l)=>`${nm} är ${l} meter lång, jämfört med ett barn som är ungefär 1,2 meter`,
   timeH:"När levde den?",ago:(a,b)=>`För ${a} till ${b} miljoner år sedan.`,start:"För 252 miljoner år sedan",end:"66",periods:["Trias","Jura","Krita"],
   speech:(d,nm)=>`Jag är ${nm}. Mitt namn betyder ${d.means.sv}. Jag var en ${S.sv.diet[d.diet].toLowerCase()} och var ${fmt(d.len)} meter lång. ${d.fact.sv}`,
@@ -313,14 +338,54 @@ const SHAPES={
   `<g style="filter:brightness(.85)"><path d="M58 46 Q96 -6 134 46 Z"/></g><polygon points="52,44 0,40 0,47 52,60"/>
   <ellipse cx="95" cy="50" rx="45" ry="14"/><polygon points="128,42 150,32 156,40 138,58"/><polygon points="146,28 196,38 196,44 182,46 150,44"/>
   <polygon points="130,54 140,62 138,65 128,58"/><ellipse cx="90" cy="58" rx="12" ry="10"/><rect x="86" y="60" width="13" height="20" rx="4"/>${eye(160,34,2)}`,
+ allo:()=>far(`<polygon points="68,40 80,40 82,72 72,72"/><rect x="70" y="70" width="18" height="5" rx="2"/>`)+
+  `<polygon points="62,24 0,30 2,34 62,42"/><ellipse cx="96" cy="32" rx="38" ry="15"/><polygon points="118,22 140,12 148,28 126,42"/>
+  <polygon points="136,6 184,14 186,22 176,27 140,26"/><polygon points="146,8 152,0 156,8"/>
+  <polygon points="126,36 140,46 142,54 137,55 134,48 122,42"/><ellipse cx="96" cy="42" rx="14" ry="12"/>
+  <polygon points="90,48 101,48 105,72 95,72"/><rect x="93" y="70" width="20" height="5" rx="2"/>${eye(158,13)}
+  <path d="M146 22 l36 -1" stroke="#1b1b1b" stroke-width="1.3" opacity=".45"/>`,
+ diplo:()=>far(`<rect x="66" y="26" width="9" height="20" rx="3"/><rect x="116" y="26" width="9" height="20" rx="3"/>`)+
+  `<polygon points="62,16 30,24 0,30 0,32 30,29 62,32"/><ellipse cx="90" cy="22" rx="32" ry="12"/>
+  <polygon points="114,14 176,7 178,14 118,28"/><ellipse cx="182" cy="10" rx="9" ry="4.5"/>
+  <rect x="76" y="26" width="10" height="20" rx="3"/><rect x="104" y="26" width="10" height="20" rx="3"/>${eye(184,9,1.5)}`,
+ pachy:()=>far(`<polygon points="84,46 94,46 96,74 88,74"/><rect x="86" y="74" width="14" height="5" rx="2"/>`)+
+  `<polygon points="70,36 2,30 2,35 70,48"/><ellipse cx="104" cy="40" rx="34" ry="16"/><polygon points="128,32 146,22 154,30 136,46"/>
+  <circle cx="156" cy="20" r="13"/><polygon points="146,22 182,30 178,38 152,38"/>
+  <circle cx="146" cy="26" r="2.5"/><circle cx="144" cy="20" r="2.5"/><circle cx="150" cy="14" r="2.5"/>
+  <polygon points="130,46 140,54 137,56 128,50"/><ellipse cx="104" cy="50" rx="13" ry="12"/>
+  <polygon points="100,56 110,56 112,74 104,74"/><rect x="102" y="74" width="16" height="6" rx="2"/>${eye(164,28,2)}`,
+ iguano:()=>far(`<rect x="64" y="46" width="12" height="29" rx="4"/><rect x="128" y="52" width="9" height="23" rx="3"/>`)+
+  `<polygon points="50,34 0,40 2,45 52,50"/><ellipse cx="92" cy="40" rx="46" ry="18"/><polygon points="128,32 152,20 160,28 138,48"/>
+  <polygon points="148,14 176,18 184,28 176,32 152,30"/><polygon points="136,62 131,50 141,60"/>
+  <ellipse cx="84" cy="52" rx="14" ry="12"/><rect x="78" y="54" width="14" height="21" rx="4"/><rect x="138" y="50" width="9" height="25" rx="3"/>${eye(164,20,2)}`,
+ carno:()=>far(`<polygon points="70,40 82,40 84,72 74,72"/><rect x="72" y="70" width="18" height="5" rx="2"/>`)+
+  `<polygon points="64,24 0,30 2,34 64,42"/><ellipse cx="98" cy="32" rx="36" ry="14"/><polygon points="120,22 144,12 150,28 128,42"/>
+  <rect x="138" y="6" width="38" height="20" rx="7"/><polygon points="146,8 140,0 154,6"/><polygon points="156,6 164,0 162,9"/>
+  <polygon points="128,38 134,41 132,43 127,40"/><ellipse cx="98" cy="42" rx="14" ry="13"/>
+  <polygon points="92,48 103,48 106,72 96,72"/><rect x="94" y="70" width="20" height="5" rx="2"/>${eye(158,13)}`,
+ dilo:()=>far(`<polygon points="72,40 82,40 84,70 76,70"/><rect x="74" y="70" width="16" height="5" rx="2"/><polygon points="152,10 160,2 172,7 174,14"/>`)+
+  `<polygon points="66,24 0,32 2,36 66,40"/><ellipse cx="98" cy="32" rx="32" ry="12"/><polygon points="120,26 142,12 150,20 128,38"/>
+  <polygon points="142,10 182,16 184,22 146,24"/><polygon points="146,10 152,1 164,5 168,13"/>
+  <polygon points="124,36 136,44 134,48 122,40"/><ellipse cx="98" cy="40" rx="11" ry="11"/>
+  <polygon points="94,46 103,46 106,70 98,70"/><rect x="96" y="70" width="18" height="5" rx="2"/>${eye(160,16,2)}`,
+ therizino:()=>far(`<polygon points="84,62 94,62 94,94 86,94"/><rect x="84" y="94" width="14" height="6" rx="2"/>`)+
+  `<polygon points="70,50 30,62 32,66 74,62"/><ellipse cx="92" cy="54" rx="26" ry="24"/><polygon points="104,36 132,10 140,16 114,46"/>
+  <ellipse cx="142" cy="11" rx="9" ry="5"/><polygon points="104,48 124,62 120,66 102,56"/>
+  <polygon points="120,62 140,74 136,76 118,66"/><polygon points="122,64 138,82 134,83 118,67"/><polygon points="116,66 128,86 124,86 114,68"/>
+  <ellipse cx="94" cy="70" rx="12" ry="12"/><polygon points="90,74 100,74 100,94 92,94"/><rect x="90" y="94" width="16" height="6" rx="2"/>${eye(144,10,1.6)}`,
+ micro:()=>far(`<polygon points="90,40 96,40 99,64 94,64"/><rect x="94" y="64" width="14" height="5" rx="2"/><polygon points="94,44 74,62 98,54"/>`)+
+  `<polygon points="72,28 20,26 20,30 72,36"/><polygon points="22,24 0,18 0,36 22,32"/><ellipse cx="96" cy="32" rx="26" ry="10"/>
+  <polygon points="116,26 134,14 140,20 122,34"/><polygon points="130,10 162,14 164,19 134,22"/>
+  <polygon points="106,30 150,42 140,52 110,40"/><ellipse cx="98" cy="40" rx="9" ry="9"/>
+  <polygon points="95,44 102,44 106,64 100,64"/><rect x="100" y="64" width="16" height="6" rx="2"/>${eye(150,14,2)}`,
 };
 const dinoSVG=(id,label)=>{const d=byId[id];return `<svg viewBox="-2 -2 204 ${d.h+4}" fill="currentColor" role="img" aria-label="${label??nm(d)}">${SHAPES[id]()}</svg>`};
 
 /* ---------- Size comparison drawn to scale in meters ---------- */
 function sizeSVG(d){
   const t=T(),L=d.len,H=L*d.h/200,W=L+2,fs=W*.03,top=Math.max(H,1.3)+fs*2.2,bot=fs*2.4;
-  const step=L>14?5:L>5?2:1;let ticks="";
-  for(let m=0;m<=L+.01;m+=step)ticks+=`<line x1="${m}" y1="0" x2="${m}" y2="${fs*.5}" stroke="var(--muted)" stroke-width="1.5" vector-effect="non-scaling-stroke"/><text x="${m}" y="${fs*1.6}" font-size="${fs*.85}" text-anchor="middle" fill="var(--muted)">${m}</text>`;
+  const step=L>14?5:L>5?2:L>=2?1:.5;let ticks="";
+  for(let m=0;m<=L+.01;m+=step)ticks+=`<line x1="${m}" y1="0" x2="${m}" y2="${fs*.5}" stroke="var(--muted)" stroke-width="1.5" vector-effect="non-scaling-stroke"/><text x="${m}" y="${fs*1.6}" font-size="${fs*.85}" text-anchor="middle" fill="var(--muted)">${fmt(m)}</text>`;
   const kx=L+1.2;
   return `<svg viewBox="${-fs} ${-top} ${W+fs*2} ${top+bot}" role="img" aria-label="${t.sizeAria(nm(d),fmt(L))}" font-family="Nunito,'PingFang SC','Microsoft YaHei',sans-serif" font-weight="800">
    <g transform="translate(0 ${-H}) scale(${L/200})" style="color:${col(d)}" fill="currentColor">${SHAPES[d.id]()}</g>
@@ -339,10 +404,31 @@ function timeline(d){
 }
 
 /* ---------- Sound ---------- */
-let ac;
-function audio(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();if(ac.state==="suspended")ac.resume();return ac}catch(e){return null}}
-function roar(s){
-  const a=audio();if(!a)return;const t=a.currentTime,d=s.d;
+let ac,unlocked=false;
+/* iPhones mute web sound when the silent switch is on. Asking for "playback" (newer iOS) and
+   playing a silent audio clip once (older iOS) makes sounds play like a video would. */
+try{if(navigator.audioSession)navigator.audioSession.type="playback"}catch(e){}
+function silentWav(){const n=2205,b=new Uint8Array(44+n),v=new DataView(b.buffer),w=(o,s)=>[...s].forEach((c,i)=>b[o+i]=c.charCodeAt(0));
+  w(0,"RIFF");v.setUint32(4,36+n,true);w(8,"WAVEfmt ");v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);
+  v.setUint32(24,22050,true);v.setUint32(28,22050,true);v.setUint16(32,1,true);v.setUint16(34,8,true);w(36,"data");v.setUint32(40,n,true);b.fill(128,44);
+  let s="";b.forEach(x=>s+=String.fromCharCode(x));return "data:audio/wav;base64,"+btoa(s)}
+function audio(){
+  try{ac=ac||new (window.AudioContext||window.webkitAudioContext)()}catch(e){return null}
+  if(ac.state!=="running")try{ac.resume()}catch(e){}
+  return ac;
+}
+function unlock(){
+  if(unlocked)return;unlocked=true;
+  try{const el=new Audio(silentWav());el.setAttribute("playsinline","");el.play().catch(()=>{})}catch(e){}
+  const a=audio();if(!a)return;
+  try{const b=a.createBuffer(1,1,22050),src=a.createBufferSource();src.buffer=b;src.connect(a.destination);src.start(0)}catch(e){}
+}
+["pointerdown","touchend","click","keydown"].forEach(ev=>document.addEventListener(ev,unlock,{capture:true,passive:true}));
+/* Wait until the sound engine is running before scheduling notes, so the first tap is not silent. */
+function whenReady(fn){const a=audio();if(!a)return;if(a.state==="running")fn(a);else a.resume().then(()=>fn(a)).catch(()=>{})}
+function roar(s){whenReady(a=>playRoar(a,s))}
+function playRoar(a,s){
+  const t=a.currentTime+.02,d=s.d;
   const buf=a.createBuffer(1,Math.floor(a.sampleRate*d),a.sampleRate),ch=buf.getChannelData(0);for(let i=0;i<ch.length;i++)ch[i]=Math.random()*2-1;
   const noise=a.createBufferSource();noise.buffer=buf;
   const osc=a.createOscillator();osc.type=s.honk?"square":"sawtooth";
@@ -354,8 +440,9 @@ function roar(s){
   noise.connect(ng).connect(lp);osc.connect(og).connect(lp);lp.connect(trem).connect(g).connect(a.destination);
   [noise,osc,lfo].forEach(n=>{n.start(t);n.stop(t+d)});
 }
-function chime(ok){
-  const a=audio();if(!a)return;const t=a.currentTime;
+function chime(ok){whenReady(a=>playChime(a,ok))}
+function playChime(a,ok){
+  const t=a.currentTime+.02;
   (ok?[523,659,784]:[220,196]).forEach((f,i)=>{const o=a.createOscillator(),g=a.createGain();o.type=ok?"triangle":"sine";o.frequency.value=f;
    const s=t+i*.11;g.gain.setValueAtTime(.0001,s);g.gain.exponentialRampToValueAtTime(.3,s+.02);g.gain.exponentialRampToValueAtTime(.0001,s+.35);o.connect(g).connect(a.destination);o.start(s);o.stop(s+.4)});
 }
@@ -394,7 +481,7 @@ function renderDetail(){
     <p class="fun">${d.fact[lang]}</p>
   </div>
   <div class="wide">
-    <div class="panel size"><h3>${t.sizeH}</h3>${sizeSVG(d)}<p>${t.kids(kidsN)}</p></div>
+    <div class="panel size"><h3>${t.sizeH}</h3>${sizeSVG(d)}<p>${d.len<1.2?t.shorter:t.kids(kidsN)}</p></div>
     <div class="panel time"><h3>${t.timeH}</h3>${timeline(d)}<p>${t.ago(d.mya[0],d.mya[1])}</p></div>
   </div>`;
   document.getElementById("roarBtn").onclick=()=>{roar(d.snd);const s=document.getElementById("stage");s.classList.remove("stomp");void s.offsetWidth;s.classList.add("stomp")};
