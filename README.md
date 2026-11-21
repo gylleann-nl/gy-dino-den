@@ -10,6 +10,7 @@ A dinosaur app for kids. It's a single web page with no build step and no depend
   - a timeline of when it lived
 - **Dig:** brush away the sand to uncover a hidden fossil.
 - **Quiz:** 5 questions with stars and a saved best score.
+- **Colouring:** pick a dinosaur and a colour, then tap parts of the picture to fill them in.
 - **Languages:** English, 中文 (Mandarin, with pinyin) and Svenska.
 - **Themes:** Rainbow and Dark green.
 
